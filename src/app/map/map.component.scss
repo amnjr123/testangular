@@ -1,0 +1,24 @@
+#mymap {
+    width: 100%;
+    height: 70vh;
+  }
+
+$Black:hsl(0, 0%, 0%);
+$Grey:#cfcece;
+
+  mat-slider {
+    width: 100%;
+  }
+span {
+    margin-left: 20px;
+    /*margin-right: 50px;
+    /*display:block;*/
+  }
+#buttons{
+  width: 50%;
+  margin: 0 auto;
+}
+
+.example-full-width {
+  width: 50px;
+}

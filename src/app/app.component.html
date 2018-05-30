@@ -1,20 +1,75 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<div>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>
+        <button mat-icon-button (click)="drawer.toggle();">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </span>
+
+      <span>{{title}}</span>
+      <span class="example-fill-remaining-space"></span>
+      <span>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>refresh</mat-icon>
+            <span>Actualiser les données</span>
+          </button>
+        </mat-menu>
+
+      </span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+<div>
+  <mat-drawer-container class="example-container" color="primary">
+    <mat-drawer #drawer class="example-sidenav" mode="side" color="primary">
+      <p *ngIf="showFiller">test.</p>
+      <button (click)="showFiller = !showFiller" mat-raised-button color="primary">
+        Toggle extra text
+      </button>
+    </mat-drawer>
+
+    <div class="example-sidenav-content">
+      <mat-tab-group class="demo-tab-group">
+        <mat-tab label="Carte">
+          <div class="demo-tab-content">
+            <navigationCarte></navigationCarte>
+            <!--mat-card class="example-card">
+              <mat-card-content>
+                <div id="navCarte">
+                    <navigationCarte [sliderValue]="sv"> </navigationCarte>
+                </div>
+                <div class="example-selected-value">Selected value: {{group.value}}</div>
+              </mat-card-content>
+            </mat-card-->
+          </div>
+        </mat-tab>
+        <mat-tab label="Filtres">
+          <div class="demo-tab-content">
+            <!-- debut tab2 content -->
+            <div class="demo-tab-content">
+                <p>
+                    <app-sidenav-filters></app-sidenav-filters>
+                  </p>
+
+              <!--mat-card class="example-card">
+                <mat-card-content>
+
+                  <div class="example-selected-value">Selected value: {{group.value}}</div>
+                </mat-card-content>
+              </mat-card-->
+            </div>
+            <!-- fin tab2 content -->
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </mat-drawer-container>
+</div>

@@ -1,0 +1,20 @@
+<!--input matInput id="testInput" [value]="url" type="text" [(ngModel)]="url"-->
+<!--button (click)="showBus()">Bus</button-->
+<!--input type="number" [value]="selectedLine" [(ngModel)]="selectedLine">
+<button (click)="showSelectedLine()">afficher</button>
+<button (click)="hideSelectedLine()">masquer</button-->
+
+<form>
+  <mat-form-field style="width:500px;">
+    <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
+      <mat-option *ngFor="let feature of lineData['features']" [value]="feature['properties']['id']">
+          {{feature['properties']['LigneTypeLibelle']}} : {{feature['properties']['LigneLibelleComplet']}}, Sens : {{feature['properties']['Ligne_Sens']}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <!--Selected value: {{selectedLine}}-->
+  <button (click)="showSelectedLine()" mat-raised-button color="primary">Afficher</button>
+  <button (click)="hideSelectedLine()" mat-raised-button>Masquer</button>
+</form>
+
+<div id="map" class="map"></div>

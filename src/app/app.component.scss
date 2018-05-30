@@ -1,0 +1,43 @@
+.example-fill-remaining-space {
+    flex: 1 1 auto;
+  }
+  .example-icon {
+    padding: 0 14px;
+  }
+
+  :host {
+    display: block;
+    height: 100%;
+  }
+  
+  .example-container {
+    position:absolute;
+    width: 100%;
+    min-height: 600px;
+  }
+  
+  .example-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .example-sidenav {
+    padding: 20px;
+    height: 100%;
+  }
+
+  .demo-tab-group {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .demo-tab-content {
+    padding: 16px;
+  }
+
+  .navCarte{
+
+    bottom:0px;
+  }

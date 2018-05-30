@@ -1,0 +1,67 @@
+<mat-accordion class="example-headers-align">
+  <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Type de lignes
+      </mat-panel-title>
+      <mat-panel-description>
+        Filtrer par type de ligne
+        <mat-icon>account_circle</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-slide-toggle class="example-margin" color="primary" checked="true" disabled="false">
+      Bus
+    </mat-slide-toggle>
+
+    <mat-action-row>
+      <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Ligne
+      </mat-panel-title>
+      <mat-panel-description>
+        Filtrer par ligne
+        <mat-icon>map</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form>
+        <mat-form-field style="width:500px;">
+          <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
+            <!--mat-option *ngFor="let feature of lineData['features']" [value]="feature['properties']['id']">
+                {{feature['properties']['LigneTypeLibelle']}} : {{feature['properties']['LigneLibelleComplet']}}, Sens : {{feature['properties']['Ligne_Sens']}}
+            </mat-option-->
+          </mat-select>
+        </mat-form-field>
+        <!--Selected value: {{selectedLine}}-->
+      </form>
+
+    <mat-action-row>
+      <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+      <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Regroupement de titres
+      </mat-panel-title>
+      <mat-panel-description>
+        
+        <mat-icon>date_range</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-action-row>
+      <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+      <button mat-button color="primary" (click)="nextStep()">Fin</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+</mat-accordion>
