@@ -6,7 +6,7 @@
 
 <form>
   <mat-form-field style="width:500px;">
-    <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
+    <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne" >
       <mat-option *ngFor="let feature of lineData['features']" [value]="feature['properties']['id']">
           {{feature['properties']['LigneTypeLibelle']}} : {{feature['properties']['LigneLibelleComplet']}}, Sens : {{feature['properties']['Ligne_Sens']}}
       </mat-option>
@@ -14,7 +14,7 @@
   </mat-form-field>
   <!--Selected value: {{selectedLine}}-->
   <button (click)="showSelectedLine()" mat-raised-button color="primary">Afficher</button>
-  <button (click)="hideSelectedLine()" mat-raised-button>Masquer</button>
+  <button (click)="hideSelectedLine()" mat-raised-button color="warn">Masquer</button>
 </form>
 
 <div id="map" class="map"></div>
