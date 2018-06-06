@@ -10,72 +10,86 @@ import { DataConService } from '../services/data-con.service';
   styleUrls: ['./olmap.component.scss']
 })
 
-@Injectable()
+//@Injectable()
 export class OlmapComponent implements OnInit, AfterViewInit {
 
   constructor(private dataService: DataConService) {
     this.lineData = new Array<any>();
+    this.stopLineData = new Array<any>();
   }
 
-  geoServerHost:String='10.205.8.226:4601';
-  geoServerWmsUrl: string = 'http://'+this.geoServerHost+'/geoserver/osm/wms';
-  map: ol.Map;
+  private geoServerHost: String = '10.205.8.226:4601';
+  private geoServerWmsUrl: string = 'http://' + this.geoServerHost + '/geoserver/osm/wms';
+  private map: ol.Map;
 
-  mapLayers;
-  osmWorldMapLayers = [new ol.layer.Tile({ source: new ol.source.OSM() })];
-  lignes: Array<ol.layer.Vector> = [null];
-  selectedLine: number = 1;
-  lineData;
-  hoverInteraction = [null];
-  hoveredLine:string;
+  private mapLayers;
+  private osmWorldMapLayers = [new ol.layer.Tile({ source: new ol.source.OSM() })];
+  private lignes: Array<ol.layer.Vector> = [null];
+  private selectedLine: number = 1;
+  private lineData;
+  private stopLineData;
+  private hoverInteraction = [null];
+  private pointHoverInteraction = [null];
+  private hoveredLine: string;
+
+  private lineDbid;
+  private lineSens;
+
+  private stops: Array<ol.layer.Vector> = [null];
 
 
   genWfsUrl(typename: string, maxFeatures: string, viewparams: string) {
-    return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=' + typename + '&maxFeatures=' + maxFeatures + '&outputFormat=application%2Fjson&viewparams=' + viewparams;
+    return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=' + typename + '&maxFeatures=' + maxFeatures + '&outputFormat=application%2Fjson&viewparams=' + viewparams;
   }
 
-  getSelectedLineStyle(lineId){
-    this.hoveredLine=this.lineNameById(lineId);
-    console.log(this.hoveredLine);
-    return new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: '#FF8300',
-        width: 10,
-      }),
-      text:new ol.style.Text({
-        text:this.hoveredLine,
-        font:'Bold 25px  \'Calibri\'',
-        
-      })
-    })
-  
-  }
-
-  lineNameById(id):string{
+  lineNameById(id): string {
     var LigneLibelleComplet;
-    this.lineData['features'].forEach(feature => {
+    this.lineData['features'].some(feature => {
       if (feature['properties']['id'] === id) {
-        LigneLibelleComplet=feature['properties']['LigneLibelleComplet'];
+        LigneLibelleComplet = feature['properties']['LigneLibelleComplet'];
+        return LigneLibelleComplet;
       } else {
-        return'';
+        return '';
       }
     });
     return LigneLibelleComplet;
   }
-  /*
-  dataAvailable(){
-    var da = false;
-    while(!da){
-      if(this.lignes[this.selectedLine] === null){
-        da=false;
-      } else {
-        da=true;
+
+  genLinePropById(id) {
+    this.lineData['features'].some(feature => {
+      if (feature['properties']['id'] === id) {
+        this.lineDbid = feature['properties']['Ligne_id'];
+        this.lineSens = feature['properties']['Ligne_Sens'];
+        return;
       }
-    }
-  }*/
+    });
+  }
+
+  getLineRecords() {
+    this.dataService.getLineRecords()
+      .subscribe(data => {
+        this.lineData = data;
+        this.getLineShapes();
+      }, err => {
+        console.log(err);
+      });
+  }
+
+  getStopLineRecords(lineDbId: string, lineDbSensId: number) {
+    this.dataService.getStopLineRecords(lineDbId, lineDbSensId)
+      .subscribe(data => {
+        this.stopLineData = data;
+        this.getStopShapes();
+        console.log(this.stops);
+      }, err => {
+        this.stopLineData = null;
+        console.log(err);
+      });
+    return this.stopLineData;
+  }
 
   ngOnInit() {
-    this.getRecords();
+    this.getLineRecords();
   }
 
   getLineShapes() {
@@ -89,9 +103,66 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getStopShapes() {
+    this.stops=[];
+    this.stopLineData['features'].forEach(feature => {
+      //console.log(feature['properties']['arret_id']);
+      this.stops.push(this.fetchmapStopFeature('osm:geoArret', '1', "Arret_id:" + feature['properties']['arret_id'], '#0DB2A6', 5));
+    });
+  }
+
+  getLineStopShapes(selectedLine) {
+    this.genLinePropById(this.selectedLine);
+    this.getStopLineRecords(this.lineDbid, this.lineSens);
+  }
+
+  showStopsOnMap() {
+    console.log(this.stops);
+    var first = true;
+    var n = -1;
+    this.stops.forEach(stop => {
+      if (first) first = false;
+      else {
+        n++;
+        this.map.removeLayer(stop);
+        this.map.addLayer(stop);
+
+        this.pointHoverInteraction[n] = new ol.interaction.Select({
+          condition: ol.events.condition.pointerMove,
+          style: new ol.style.Style({
+            image: new ol.style.Circle({
+              stroke: new ol.style.Stroke({
+                color: '#FF8300',
+                width: 10
+              }),
+              radius: 5
+            }),
+            text: new ol.style.Text({
+              text: 'Arret n° '+n,
+              font: 'Bold 18px  \'Calibri\'',
+      
+            })
+          }),
+          layers: [stop]
+        });
+        this.pointHoverInteraction.forEach(element => {
+          this.map.addInteraction(element);
+        });
+
+      }
+
+    });
+  }
+
+  removeStopsFormMap(){
+    var first = true;
+    var n = -1;
+    this.stops.forEach(stop => {
+        this.map.removeLayer(stop);
+    });
+  }
 
   ngAfterViewInit() {
-
     //Polygones fond de carte
     var polygon = this.fetchMapLayer('osm:planet_osm_polygon', 3857, '');
 
@@ -108,23 +179,8 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     var stops = this.fetchMapLayer('osm:testSqlView', 4326, '');
 
     this.mapLayers = [/*polygon, */roads, lines/*, points*/];
-    this.map = this.newOlMap(this.mapLayers,'map');
+    this.map = this.newOlMap(this.mapLayers, 'map');
     //this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
-    /*
-    for (var j = 1; j < this.lignes.length; j++) {
-      //this.lignes[j].setVisible(false);
-      this.map.addLayer(this.lignes[j]);
-    }
-    */
-
-
-
-    this.map.on('pointermove', function (evt: ol.MapBrowserEvent) {
-      //console.log(evt.coordinate);
-      /*this.map.forEachLayerAtPixel(evt.pixel, function (layer) {
-          console.log('layer hovered');
-      });*/
-    });
   }
 
   newOlMap(layers, target: string) {
@@ -159,27 +215,45 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       url: this.genWfsUrl(sdLayerName, maxFeatures, vp),
       strategy: ol.loadingstrategy.bbox
     });
-
     var layer = new ol.layer.Vector({
-      source: vectorSource
+      source: vectorSource,
     });
-
     var style = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: color,
         width: width
       })
     })
-
     layer.setStyle(style);
-
-    //console.log(layer.getProperties());
     return layer;
+  }
 
+  fetchmapStopFeature(sdLayerName: string, maxFeatures: string, vp: string, color: string, width: number) {
+    var vectorSource = new ol.source.Vector({
+      format: new ol.format.GeoJSON,
+      url: this.genWfsUrl(sdLayerName, maxFeatures, vp),
+      strategy: ol.loadingstrategy.bbox
+    });
+    var layer = new ol.layer.Vector({
+      source: vectorSource,
+    });
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        stroke: new ol.style.Stroke({
+          color: color,
+          width: 10
+        }),
+        radius: 2
+      })
+    });
+    layer.setStyle(style);
+    console.log(layer.getKeys);
+    return layer;
   }
 
   showSelectedLine() {
     this.map.addLayer(this.lignes[this.selectedLine]);
+    this.getLineStopShapes(this.selectedLine);
 
     this.hoverInteraction[this.selectedLine] = new ol.interaction.Select({
       condition: ol.events.condition.pointerMove,
@@ -187,22 +261,29 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       layers: [this.lignes[this.selectedLine]]
     });
     this.map.addInteraction(this.hoverInteraction[this.selectedLine]);
+    this.showStopsOnMap();
   }
-
 
   hideSelectedLine() {
     this.map.removeLayer(this.lignes[this.selectedLine]);
     this.map.removeInteraction(this.hoverInteraction[this.selectedLine]);
+    this.removeStopsFormMap();
   }
 
-  getRecords() {
-    this.dataService.getRecords()
-      .subscribe(data => {
-        this.lineData = data;
-        this.getLineShapes();
-      }, err => {
-        console.log(err);
-      });
+  getSelectedLineStyle(lineId) {
+    this.hoveredLine = this.lineNameById(lineId);
+    console.log(this.hoveredLine);
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#FF8300',
+        width: 10,
+      }),
+      text: new ol.style.Text({
+        text: this.hoveredLine,
+        font: 'Bold 18px  \'Calibri\'',
+      })
+    })
+
   }
 
 }
