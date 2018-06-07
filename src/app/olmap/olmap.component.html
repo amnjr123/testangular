@@ -5,10 +5,10 @@
 <button (click)="hideSelectedLine()">masquer</button-->
 
 <form>
-  <mat-form-field style="width:500px;">
+  <mat-form-field style="width:1000px;">
     <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne" >
-      <mat-option *ngFor="let feature of lineData['features']" [value]="feature['properties']['id']">
-          {{feature['properties']['LigneTypeLibelle']}} : {{feature['properties']['LigneLibelleComplet']}}, Sens : {{feature['properties']['Ligne_Sens']}}
+      <mat-option *ngFor="let ligne of listeLignes" [value]="ligne">
+          {{ligne.getType()}} : {{ligne.getNomCommercial()}}, Sens : {{ligne.getSens()}}
       </mat-option>
     </mat-select>
   </mat-form-field>

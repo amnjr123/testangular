@@ -18,6 +18,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MapComponent } from './map/map.component';
 import { FormsModule } from '@angular/forms';
 import { AgmCoreModule } from '@agm/core';
@@ -25,6 +26,7 @@ import { OlmapComponent } from './olmap/olmap.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataConService } from './services/data-con.service';
 import { SidenavFiltersComponent } from './sidenav-filters/sidenav-filters.component';
+import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { SidenavFiltersComponent } from './sidenav-filters/sidenav-filters.compo
     MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
+    MatSnackBarModule,
     MatExpansionModule,
     FormsModule,
     HttpClientModule,
@@ -60,7 +63,7 @@ import { SidenavFiltersComponent } from './sidenav-filters/sidenav-filters.compo
 
   ],
   providers: [
-    DataConService
+    DataConService,GestionLigneArret
   ],
   bootstrap: [AppComponent]
 })
