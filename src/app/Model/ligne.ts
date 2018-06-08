@@ -10,7 +10,7 @@ export class Ligne {
   nomCommercial: string;
   type: string;
   geo: ol.layer.Vector;
-  arrets: Array<Arret>;
+  arrets: Array<Arret>=[null];
   style: ol.style.Style;
   hstyle: ol.style.Style;
   hoverInteraction: ol.interaction.Select;
@@ -77,6 +77,9 @@ export class Ligne {
       this.arrets.splice(index, 1);
     }
   }
+  getStyle():ol.style.Style{
+    return this.style;
+  }
 
   initGeo() {
     var color: string;
@@ -121,7 +124,6 @@ export class Ligne {
 
   highlight(t:number,s:number) {
     this.timerAutoPlay = timer(0, s);
-    //this.geo.setStyle(this.hstyle);
     try { this.timerSub.unsubscribe(); } catch { console.log("timer already unsubscribed"); }
     var i = 0;
     this.timerSub = this.timerAutoPlay.subscribe(x => {

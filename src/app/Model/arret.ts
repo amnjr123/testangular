@@ -10,11 +10,12 @@ export class Arret {
   constructor(id:number,nomCommercial:string,lat,lng) {
     this.id=id;
     this.nomCommercial=nomCommercial;
+    let point = ol.proj.transform([lng,lat], 'EPSG:4326', 'EPSG:3857');
     this.geo = new ol.layer.Vector({
       source: new ol.source.Vector({
         strategy: ol.loadingstrategy.bbox,
         features: [new ol.Feature({
-          geometry: new ol.geom.Point([lat,lng]),
+          geometry: new ol.geom.Point(point)
         })]
       })
     }); 

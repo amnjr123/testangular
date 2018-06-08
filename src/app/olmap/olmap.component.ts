@@ -6,6 +6,8 @@ import { DataConService } from '../services/data-con.service';
 import { GestionLigneArret } from '../Model/gestion-ligne-arret.service';
 import { MatSnackBar } from '@angular/material';
 import { Ligne } from '../Model/ligne';
+import { Arret } from '../Model/arret';
+
 
 @Component({
   selector: 'app-olmap',
@@ -17,8 +19,8 @@ import { Ligne } from '../Model/ligne';
 export class OlmapComponent implements OnInit, AfterViewInit {
 
   constructor(private dataService: DataConService, private gestionLigneArret: GestionLigneArret, public snackBar: MatSnackBar) {
-    this.lineData = new Array<any>();
-    this.stopLineData = new Array<any>();
+    //this.lineData = new Array<any>();
+    //this.stopLineData = new Array<any>();
   }
 
   private geoServerHost: String = '10.205.8.226:4601';
@@ -27,18 +29,18 @@ export class OlmapComponent implements OnInit, AfterViewInit {
 
   private mapLayers;
   private osmWorldMapLayers = [new ol.layer.Tile({ source: new ol.source.OSM() })];
-  private lignes: Array<ol.layer.Vector> = [null];
+  //private lignes: Array<ol.layer.Vector> = [null];
 
-  private lineData;
-  private stopLineData;
-  private hoverInteraction = [null];
-  private pointHoverInteraction = [null];
-  private hoveredLine: string;
+  //private lineData;
+  //private stopLineData;
+  //private hoverInteraction = [null];
+  //private pointHoverInteraction = [null];
+  //private hoveredLine: string;
 
-  private lineDbid;
-  private lineSens;
+  //private lineDbid;
+  //private lineSens;
 
-  private stops: Array<ol.layer.Vector> = [null];
+  //private stops: Array<ol.layer.Vector> = [null];
 
   private listeLignes = this.gestionLigneArret.getLignes();
   private selectedLine: Ligne;
@@ -186,8 +188,8 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     var stops = this.fetchMapLayer('osm:testSqlView', 4326, '');
 
     this.mapLayers = [/*polygon, */roads, lines/*, points*/];
-    //this.map = this.newOlMap(this.mapLayers, 'map');
-    this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+    this.map = this.newOlMap(this.mapLayers, 'map');
+    //this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
   }
 
   newOlMap(layers, target: string) {
@@ -261,29 +263,63 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   */
   showSelectedLine() {
     if (this.selectedLine === undefined) {
-      this.snackBar.open('Selectionnez une ligne', null, { duration: 1000 });
+      this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
     } else {
       try {
+        //console.log(this.selectedLine.getGeo());
         this.map.addLayer(this.selectedLine.getGeo());
         this.map.addInteraction(this.selectedLine.getHoverInteraction());
-        this.selectedLine.highlight(1,2000);
-      } catch {
-        this.selectedLine.highlight(5,150);
+        //this.selectedLine.highlight(1, 2000);
+        let color: string = this.selectedLine.getStyle().getStroke().getColor().toString();
+        let i = 1;
+        this.selectedLine.getArrets().forEach(arret => {
+          if (i === 1) {
+            i = 0;
+          } else {
+            arret.getGeo().setStyle(new ol.style.Style({
+              image: new ol.style.Circle({
+                stroke: new ol.style.Stroke({
+                  color: color,
+                  width: 10
+                }),
+                radius: 2
+              })
+            }));
+            this.map.addLayer(arret.getGeo());
+          }
+        });
+
+      } catch (e) {
+        this.selectedLine.highlight(5, 150);
+        console.log(e);
       }
     }
   }
 
   hideSelectedLine() {
     if (this.selectedLine === undefined) {
-      this.snackBar.open('Selectionnez une ligne', null, { duration: 1000 });
+      this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
     } else {
       try {
         this.map.removeLayer(this.selectedLine.getGeo());
         this.map.removeInteraction(this.selectedLine.getHoverInteraction());
-      } catch {
+        let i=1;
+        this.selectedLine.getArrets().forEach(arret => {
+          if (i === 1) {
+            i = 0;
+          } else {
+            this.map.removeLayer(arret.getGeo());
+          }
+        });
+      } catch (e) {
         this.snackBar.open('Ligne non affichée', null, { duration: 1000 });
+        console.log(e);
       }
     }
+  }
+
+  showStopsOnMap() {
+    console.log(this.selectedLine.getArrets());
   }
   /*
     getSelectedLineStyle(lineId) {

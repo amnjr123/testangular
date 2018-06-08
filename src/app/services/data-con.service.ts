@@ -2,11 +2,14 @@ import { Injectable, ResolvedReflectiveFactory } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import {Http, Response} from "@angular/http";
+import { Arret } from '../Model/arret';
+import { Ligne } from '../Model/ligne';
 
 @Injectable()
 export class DataConService {
   geoServerHost:String='10.205.8.226:4601';
   data:any;
+  allStopLineData:any;
 
   constructor(private http: HttpClient) { 
     
@@ -31,16 +34,36 @@ export class DataConService {
     return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:arretsParLigne&maxFeatures=50&outputFormat=application%2Fjson&viewParams=ligne_id:'+lineId+';sens_id='+lineDbSensId;
   }
 
-  getStopLineRecords(lineId:String, lineDbSensId:number) {
-    console.log(this.genStopLineDataUrl(lineId,lineDbSensId));
-    return this.http.get(this.genStopLineDataUrl(lineId,lineDbSensId)).map((data:any) => {
-      this.data = data;
-      return this.data;
+  genAllStopLineDataUrl(lineId:String, lineDbSensId:string){
+    return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:arretsParLigne&maxFeatures=50&outputFormat=application%2Fjson&viewParams=ligne_id:'+lineId+';sens_id='+lineDbSensId;
+  }
+
+  getStopLineRecords(line:Ligne) {
+    //console.log(line.getNomCommercial());
+    //console.log(this.genStopLineDataUrl(line.getdbId(),line.getSens()));
+    return this.http.get(this.genStopLineDataUrl(line.getdbId(),line.getSens())).map((data:any) => {
+      //console.log(data);
+      return data;     
     }, err => {
       if (err) {
         return err.json();
       }
     });
+  }
+
+  getAllStopLines() {
+    let promise = new Promise((resolve, reject) => {
+      let url = this.genAllStopLineDataUrl('%%','%%');
+      this.http.get(url)
+      .toPromise()
+      .then(
+        res => {
+          this.allStopLineData=res;
+          resolve();
+        }
+      );
+    });
+    return promise;
   }
 
 }
