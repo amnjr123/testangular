@@ -10,7 +10,7 @@ export class Ligne {
   nomCommercial: string;
   type: string;
   geo: ol.layer.Vector;
-  arrets: Array<Arret>=[null];
+  arrets: Array<Arret> = [null];
   style: ol.style.Style;
   hstyle: ol.style.Style;
   hoverInteraction: ol.interaction.Select;
@@ -77,7 +77,7 @@ export class Ligne {
       this.arrets.splice(index, 1);
     }
   }
-  getStyle():ol.style.Style{
+  getStyle(): ol.style.Style {
     return this.style;
   }
 
@@ -112,7 +112,15 @@ export class Ligne {
       text: new ol.style.Text({
         text: this.nomCommercial,
         font: 'Bold 18px  \'Calibri\'',
-      })
+        fill: new ol.style.Fill({
+          color: 'white'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#FF8300',
+          width: 3
+        })
+      }),
+
     });
 
     this.hoverInteraction = new ol.interaction.Select({
@@ -122,7 +130,7 @@ export class Ligne {
     });
   }
 
-  highlight(t:number,s:number) {
+  highlight(t: number, s: number) {
     this.timerAutoPlay = timer(0, s);
     try { this.timerSub.unsubscribe(); } catch { console.log("timer already unsubscribed"); }
     var i = 0;

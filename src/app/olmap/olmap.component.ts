@@ -21,11 +21,13 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   constructor(private dataService: DataConService, private gestionLigneArret: GestionLigneArret, public snackBar: MatSnackBar) {
     //this.lineData = new Array<any>();
     //this.stopLineData = new Array<any>();
+    this.ponctualiteData = new Array<any>();
   }
 
   private geoServerHost: String = '10.205.8.226:4601';
   private geoServerWmsUrl: string = 'http://' + this.geoServerHost + '/geoserver/osm/wms';
   private map: ol.Map;
+  private zoom;
 
   private mapLayers;
   private osmWorldMapLayers = [new ol.layer.Tile({ source: new ol.source.OSM() })];
@@ -44,6 +46,12 @@ export class OlmapComponent implements OnInit, AfterViewInit {
 
   private listeLignes = this.gestionLigneArret.getLignes();
   private selectedLine: Ligne;
+  private visibleLines: Array<Ligne> = [];
+  private visibleStops: Array<Arret> = [];
+
+  private buttonLabel='get data';
+
+  private ponctualiteData;
 
   /*
   genWfsUrl(typename: string, maxFeatures: string, viewparams: string) {
@@ -276,16 +284,25 @@ export class OlmapComponent implements OnInit, AfterViewInit {
           if (i === 1) {
             i = 0;
           } else {
-            arret.getGeo().setStyle(new ol.style.Style({
+            arret.setStyle(new ol.style.Style({
               image: new ol.style.Circle({
                 stroke: new ol.style.Stroke({
                   color: color,
-                  width: 10
+                  width: 5
                 }),
-                radius: 2
+                radius: 8,
+                fill: new ol.style.Fill({
+                  color: '#FFFFFF'
+                })
+              }),
+              text: new ol.style.Text({
+                //text : arret.getNomCommercial(),
+                font: 'Bold 14px  \'Calibri\''
               })
             }));
             this.map.addLayer(arret.getGeo());
+            this.visibleStops.push(arret);
+            this.map.addInteraction(arret.getHoverInteraction());
           }
         });
 
@@ -293,6 +310,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
         this.selectedLine.highlight(5, 150);
         console.log(e);
       }
+      this.visibleLines.push(this.selectedLine);
     }
   }
 
@@ -303,14 +321,25 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       try {
         this.map.removeLayer(this.selectedLine.getGeo());
         this.map.removeInteraction(this.selectedLine.getHoverInteraction());
-        let i=1;
+        let i = 1;
         this.selectedLine.getArrets().forEach(arret => {
           if (i === 1) {
             i = 0;
           } else {
             this.map.removeLayer(arret.getGeo());
+            const index: number = this.visibleStops.indexOf(arret);
+            if (index !== -1) {
+              this.visibleStops.splice(index, 1);
+            }
+            this.map.removeInteraction(arret.getHoverInteraction());
           }
         });
+
+        const index: number = this.visibleLines.indexOf(this.selectedLine);
+        if (index !== -1) {
+          this.visibleLines.splice(index, 1);
+        }
+        console.log(this.visibleStops);
       } catch (e) {
         this.snackBar.open('Ligne non affichée', null, { duration: 1000 });
         console.log(e);
@@ -318,9 +347,44 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  showStopsOnMap() {
-    console.log(this.selectedLine.getArrets());
+  showStopData() {
+    console.log(this.genStringArrets());
+    this.buttonLabel='Chargement des données';
+    this.dataService.getRetardArret(this.genStringArrets())
+    .subscribe(data => {
+      this.ponctualiteData=data;
+      console.log(this.ponctualiteData);
+      this.showDataOnMap();
+    }, err => {
+      console.log(err);
+    });
   }
+
+  genStringArrets():string{
+    let str='';
+    this.visibleStops.forEach(stop => {
+      str=str+stop.getId()+'\\,';
+    });
+    str=str+'00000000000';
+    return str;
+  }
+
+  getArretById(id):Arret{
+    let returnValue;
+    this.visibleStops.forEach(arret => {
+      if(arret.getId()===id){
+        returnValue = arret;
+      }
+    });
+    return returnValue;
+  }
+
+  showDataOnMap(){
+    this.ponctualiteData['features'].forEach(feature => {
+      this.getArretById(feature['properties']['Arret_id']).setSizeData(feature['properties']['Nb_Departs_Retard']/100);
+    });
+  }
+
   /*
     getSelectedLineStyle(lineId) {
       this.hoveredLine = this.lineNameById(lineId);

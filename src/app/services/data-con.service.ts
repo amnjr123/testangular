@@ -33,9 +33,14 @@ export class DataConService {
   genStopLineDataUrl(lineId:String, lineDbSensId:number){
     return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:arretsParLigne&maxFeatures=50&outputFormat=application%2Fjson&viewParams=ligne_id:'+lineId+';sens_id='+lineDbSensId;
   }
-
+/*
   genAllStopLineDataUrl(lineId:String, lineDbSensId:string){
     return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:arretsParLigne&maxFeatures=50&outputFormat=application%2Fjson&viewParams=ligne_id:'+lineId+';sens_id='+lineDbSensId;
+  }
+*/
+
+  genRetardArretURL(arrets:string){
+    return 'http://'+this.geoServerHost+'/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:Ponctualite_Arret_AnneeMois&maxFeatures=10000&outputFormat=application%2Fjson&viewParams=Arret_id:'+arrets;
   }
 
   getStopLineRecords(line:Ligne) {
@@ -51,6 +56,24 @@ export class DataConService {
     });
   }
 
+  getRetardArret(arrets:string) {
+    //console.log(this.genRetardArretURL(arrets));
+    //console.log(line.getNomCommercial());
+    //console.log(this.genStopLineDataUrl(line.getdbId(),line.getSens()));
+    return this.http.get(this.genRetardArretURL(arrets)).map((data:any) => {
+      //console.log(data);
+      return data; 
+          
+    }, err => {
+      if (err) {
+        return err.json();
+      }
+    });
+  }
+
+
+
+  /*
   getAllStopLines() {
     let promise = new Promise((resolve, reject) => {
       let url = this.genAllStopLineDataUrl('%%','%%');
@@ -64,6 +87,6 @@ export class DataConService {
       );
     });
     return promise;
-  }
+  }*/
 
 }
