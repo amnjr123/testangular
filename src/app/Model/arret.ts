@@ -7,8 +7,10 @@ export class Arret {
   nomCommercial: string;
   geo;
   hStyle: ol.style.Style;
+  dHStyle: ol.style.Style;
   hoverInteraction: ol.interaction.Select;
-  sizeData:number;
+  dataHoverInteraction: ol.interaction.Select;
+  sizeData:number=0;
 
   constructor(id: number, nomCommercial: string, lat, lng) {
     this.id = id;
@@ -23,7 +25,6 @@ export class Arret {
       })
     });
     this.initHoveredStyle();
-
   }
 
   getId() {
@@ -39,6 +40,10 @@ export class Arret {
     return this.hoverInteraction;
   }
 
+  getDataHoverInteraction(){
+    return this.dataHoverInteraction;
+  }
+
   setNomCommercial(nom: string) {
     this.nomCommercial = nom;
   }
@@ -50,24 +55,65 @@ export class Arret {
     this.geo.setStyle(style);
   }
 
-  setSizeData(data:number){
-    this.sizeData=data;
+  addSizeData(data:number){
+    this.sizeData=this.sizeData+data;
+  }
+
+  initSizeData(){
+    this.sizeData=0;
+  }
+
+  setSizeData(){
+    //this.sizeData=data;
+    let size = this.sizeData/4000
     this.setStyle(new ol.style.Style({
       image: new ol.style.Circle({
         stroke: new ol.style.Stroke({
           color: '#06A1EF',
           width: 0
         }),
-        radius: this.sizeData,
+        radius: size,
         fill: new ol.style.Fill({
           color: '#06A1EF'
         })
       }),
       text: new ol.style.Text({
-        //text : this.getNomCommercial(),
+        //text : this.sizeData+' Départs en retard',
         font: 'Bold 14px  \'Calibri\''
       })
     }));
+  }
+
+  getColor(value){
+    var hue=((1-value)*120).toString(10);
+    return ["hsl(",hue,",100%,40%)"].join("");
+  }
+
+  setSizeDataMagneto(){
+    //this.sizeData=data;
+    let size = 0;
+    if (this.sizeData>=2000){
+      size=1
+    } else {
+      size = this.sizeData/2000;
+    }
+    this.setStyle(new ol.style.Style({
+      image: new ol.style.Circle({
+        stroke: new ol.style.Stroke({
+          color: '#FFFFFF',
+          width: 0
+        }),
+        radius: size*20,
+        fill: new ol.style.Fill({
+          color: this.getColor(size)//'#06A1EF'
+        })
+      }),
+      text: new ol.style.Text({
+        //text : this.sizeData+' Départs en retard',
+        font: 'Bold 14px  \'Calibri\''
+      })
+    }));
+
   }
 
   initHoveredStyle(){
@@ -94,6 +140,38 @@ export class Arret {
     this.hoverInteraction = new ol.interaction.Select({
       condition: ol.events.condition.pointerMove,
       style: this.hStyle,
+      layers: [this.geo]
+    });
+  }
+
+  initDataHoveredStyle(){
+
+    let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.sizeData+'\nDéparts en retard';
+    let textLength = text.length;
+
+    this.dHStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+        stroke: new ol.style.Stroke({
+          color: '#FFFFFF',
+          width: 3
+        }),
+        radius: textLength*2,
+        fill: new ol.style.Fill({
+          color: '#06A1EF'
+        })
+      }),
+      text: new ol.style.Text({
+        text : text,
+        font: 'Bold 14px  \'Calibri\'',
+        fill: new ol.style.Fill({
+          color: 'white'
+        }),
+      })
+    });
+
+    this.dataHoverInteraction = new ol.interaction.Select({
+      condition: ol.events.condition.pointerMove,
+      style: this.dHStyle,
       layers: [this.geo]
     });
   }

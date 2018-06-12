@@ -44,10 +44,7 @@ export class DataConService {
   }
 
   getStopLineRecords(line:Ligne) {
-    //console.log(line.getNomCommercial());
-    //console.log(this.genStopLineDataUrl(line.getdbId(),line.getSens()));
     return this.http.get(this.genStopLineDataUrl(line.getdbId(),line.getSens())).map((data:any) => {
-      //console.log(data);
       return data;     
     }, err => {
       if (err) {
@@ -57,13 +54,8 @@ export class DataConService {
   }
 
   getRetardArret(arrets:string) {
-    //console.log(this.genRetardArretURL(arrets));
-    //console.log(line.getNomCommercial());
-    //console.log(this.genStopLineDataUrl(line.getdbId(),line.getSens()));
     return this.http.get(this.genRetardArretURL(arrets)).map((data:any) => {
-      //console.log(data);
       return data; 
-          
     }, err => {
       if (err) {
         return err.json();

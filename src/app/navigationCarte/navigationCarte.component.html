@@ -1,5 +1,5 @@
 <!--app-map [sliderValue]="sliderValue" [(ngModel)]="sliderValue" ngDefaultControl></app-map-->
-<app-olmap></app-olmap>
+<app-olmap [sliderValue]='sliderValue'></app-olmap>
 <mat-card class="example-card">
   <mat-card-content>
     <div id="navCarte">
@@ -53,6 +53,17 @@
           <!--mat-form-field class="example-full-width">
       <input matInput [value]="sliderValue" (input)="limitSliderInputValue()" [(ngModel)]="sliderValue">
     </mat-form-field-->
+        </span>
+        <span>
+          <mat-form-field>
+            <mat-select placeholder="Vitesse" [(ngModel)]="speed" name="vitesse">
+              <mat-option value="1300">Trés lent</mat-option>
+              <mat-option value="1000">Lent</mat-option>
+              <mat-option value="700">Moyen</mat-option>
+              <mat-option value="400">Rapide</mat-option>
+              <mat-option value="100">Trés rapide</mat-option>
+            </mat-select>
+          </mat-form-field>
         </span>
       </div>
       <br>

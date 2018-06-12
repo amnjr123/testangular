@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Injectable } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Injectable, Input, SimpleChanges } from '@angular/core';
 
 import * as ol from 'openlayers';
 
@@ -52,6 +52,10 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   private buttonLabel='get data';
 
   private ponctualiteData;
+
+  private mois=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
+
+  @Input() sliderValue=1;
 
   /*
   genWfsUrl(typename: string, maxFeatures: string, viewparams: string) {
@@ -196,8 +200,15 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     var stops = this.fetchMapLayer('osm:testSqlView', 4326, '');
 
     this.mapLayers = [/*polygon, */roads, lines/*, points*/];
-    this.map = this.newOlMap(this.mapLayers, 'map');
-    //this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+    //this.map = this.newOlMap(this.mapLayers, 'map');
+    this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+  }
+
+  ngOnChanges(changes: SimpleChanges){
+    if (changes['sliderValue'] ){
+      //this.sliderValue=changes['sliderValue'].currentValue;
+      this.magnetoFwd(this.mois[this.sliderValue]);
+    }
   }
 
   newOlMap(layers, target: string) {
@@ -327,6 +338,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
             i = 0;
           } else {
             this.map.removeLayer(arret.getGeo());
+            this.map.removeInteraction(arret.getHoverInteraction());
             const index: number = this.visibleStops.indexOf(arret);
             if (index !== -1) {
               this.visibleStops.splice(index, 1);
@@ -380,8 +392,36 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   }
 
   showDataOnMap(){
+    this.visibleStops.forEach(arret => {
+      this.map.removeInteraction(arret.getHoverInteraction());
+      arret.initSizeData();
+  
+    });   
     this.ponctualiteData['features'].forEach(feature => {
-      this.getArretById(feature['properties']['Arret_id']).setSizeData(feature['properties']['Nb_Departs_Retard']/100);
+      this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
+    });
+    this.visibleStops.forEach(arret => {
+      arret.setSizeData();
+      arret.initDataHoveredStyle();
+      this.map.addInteraction(arret.getDataHoverInteraction());
+    });
+  }
+
+  magnetoFwd(mois:string){
+    this.visibleStops.forEach(arret => {
+      //this.map.removeInteraction(arret.getHoverInteraction());      
+      arret.initSizeData();
+  
+    });   
+    this.ponctualiteData['features'].forEach(feature => {
+      if(feature['properties']['Libelle_Mois']===mois){
+        this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
+      }      
+    });
+    this.visibleStops.forEach(arret => {
+      arret.setSizeDataMagneto();
+      arret.initDataHoveredStyle();
+      //this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
 
