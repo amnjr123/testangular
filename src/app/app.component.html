@@ -5,7 +5,7 @@
     <mat-toolbar-row>
       <span>
         <button mat-icon-button (click)="drawer.toggle();">
-          <mat-icon>menu</mat-icon>
+          <mat-icon svgIcon="menu"></mat-icon>
         </button>
       </span>
 
@@ -14,11 +14,11 @@
       <span>
 
         <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
+          <mat-icon svgIcon="more_vert"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item>
-            <mat-icon>refresh</mat-icon>
+            <mat-icon svgIcon="refresh"></mat-icon>
             <span>Actualiser les données</span>
           </button>
         </mat-menu>
@@ -28,12 +28,15 @@
   </mat-toolbar>
 </div>
 <div>
-  <mat-drawer-container class="example-container" color="primary">
-    <mat-drawer #drawer class="example-sidenav" mode="side" color="primary">
-      <p *ngIf="showFiller">test.</p>
+  <mat-drawer-container class="example-container" hasBackdrop="true">
+    <mat-drawer #drawer class="example-sidenav" mode="Over" color="primary">
+      <!--p *ngIf="showFiller">test.</p>
       <button (click)="showFiller = !showFiller" mat-raised-button color="primary">
         Toggle extra text
-      </button>
+      </button-->
+      <p>
+        <app-sidenav-filters [drawer]="drawer"></app-sidenav-filters>
+      </p>
     </mat-drawer>
 
     <div class="example-sidenav-content">
@@ -55,9 +58,7 @@
           <div class="demo-tab-content">
             <!-- debut tab2 content -->
             <div class="demo-tab-content">
-                <!--p>
-                    <app-sidenav-filters></app-sidenav-filters>
-                  </p-->
+
               <!--mat-card class="example-card">
                 <mat-card-content>
 

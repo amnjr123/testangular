@@ -1,67 +1,183 @@
-<mat-accordion class="example-headers-align">
-  <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Type de lignes
-      </mat-panel-title>
-      <mat-panel-description>
-        Filtrer par type de ligne
-        <mat-icon>account_circle</mat-icon>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+<mat-card>
+  <!-- [style.backgroundColor]="'lightGray'" -->
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>
+      Validations par arrêt
+    </mat-card-title>
+    <mat-card-subtitle>Filtres</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Lignes
+          </mat-panel-title>
+          <mat-panel-description>
+            Lignes
+            <mat-icon svgIcon="timeline"></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-radio-group class="example-radio-group" [(ngModel)]="allLines">
+          <mat-radio-button class="example-radio-button" [value]="true">
+            Toutes les lignes
+          </mat-radio-button>
+          <br>
+          <br>
+          <mat-radio-button class="example-radio-button" [value]="false">
+            Personnalisé
+          </mat-radio-button>
+        </mat-radio-group>
+        <br>
+        <br>
+        <span *ngIf="!allLines">
+          <mat-icon matPrefix svgIcon="bus"></mat-icon>
+          <mat-form-field style="width: 85%">
+            <mat-select placeholder="Lignes de bus" [formControl]="ligneBFc" [(ngModel)]="selectedBusLines" multiple>
+              <ng-container *ngFor="let ligne of lignes">
+                <mat-option *ngIf="isBus(ligne)" [value]="ligne">{{ligne.getNomCommercial()}}</mat-option>
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="resetSelectedBus()"><mat-icon svgIcon="close"></mat-icon></button>
+          <br>
 
-    <mat-slide-toggle class="example-margin" color="primary" checked="true" disabled="false">
-      Bus
-    </mat-slide-toggle>
+          <mat-icon matPrefix svgIcon="tram"></mat-icon>
+          <mat-form-field style="width: 85%">
+            <mat-select placeholder="Lignes de Tram" [formControl]="ligneTFc" [(ngModel)]="selectedTramLines" multiple>
+              <ng-container *ngFor="let ligne of lignes">
+                <mat-option *ngIf="isTram(ligne)" [value]="ligne">{{ligne.getNomCommercial()}}</mat-option>
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="resetSelectedTram()"><mat-icon svgIcon="close"></mat-icon></button>
+        </span>
 
-    <mat-action-row>
-      <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-    </mat-action-row>
-  </mat-expansion-panel>
+        <mat-action-row>
+          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Ligne
-      </mat-panel-title>
-      <mat-panel-description>
-        Filtrer par ligne
-        <mat-icon>map</mat-icon>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Arrets
+          </mat-panel-title>
+          <mat-panel-description>
+            Arrets
+            <mat-icon svgIcon="stop"></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-radio-group class="example-radio-group" [(ngModel)]="arretsSelectionType">
+          <mat-radio-button class="example-radio-button" value="all">
+            Tout les arrêts
+          </mat-radio-button>
+          <br *ngIf="!allLines">
+          <br *ngIf="!allLines">
+          <mat-radio-button *ngIf="!allLines" class="example-radio-button" value="selectedLines">
+            Lignes selectionnées
+          </mat-radio-button>
+          <br>
+          <br>
+          <mat-radio-button class="example-radio-button" value="pers">
+            Personnalisé
+          </mat-radio-button>
+        </mat-radio-group>
+        <br>
+        <br>
+        <span *ngIf="arretsSelectionType==='pers'">
+          <mat-icon matPrefix svgIcon="bus"></mat-icon>
+          <mat-form-field style="width: 85%">
+            <mat-select placeholder="Arrêts" [formControl]="arretFc" [(ngModel)]="selectedStops" multiple>
+              <ng-container *ngFor="let arret of arrets">
+                <mat-option [value]="arret">{{arret.getNomCommercial()}}</mat-option>
+                
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="resetSelectedStops()"><mat-icon svgIcon="close"></mat-icon></button>
+          <br>
+        </span>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-    <form>
-        <mat-form-field style="width:500px;">
-          <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
-            <!--mat-option *ngFor="let feature of lineData['features']" [value]="feature['properties']['id']">
-                {{feature['properties']['LigneTypeLibelle']}} : {{feature['properties']['LigneLibelleComplet']}}, Sens : {{feature['properties']['Ligne_Sens']}}
-            </mat-option-->
-          </mat-select>
-        </mat-form-field>
-        <!--Selected value: {{selectedLine}}-->
-      </form>
+      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Date
+          </mat-panel-title>
+          <mat-panel-description>
+            Date
+            <mat-icon svgIcon="date_range"></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-    <mat-action-row>
-      <button mat-button color="warn" (click)="prevStep()">Précédent</button>
-      <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-    </mat-action-row>
-  </mat-expansion-panel>
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label>Année</mat-label>
+            <input matInput placeholder="Année">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Mois" [formControl]="moisFc" multiple>
+              <mat-option *ngFor="let m of mois" [value]="m">{{m}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Jours de semaine" [formControl]="jourFc" multiple>
+              <mat-option *ngFor="let jour of jours" [value]="jour">{{jour}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </p>
 
-  <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Regroupement de titres
-      </mat-panel-title>
-      <mat-panel-description>
-        
-        <mat-icon>date_range</mat-icon>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-    <mat-action-row>
-      <button mat-button color="warn" (click)="prevStep()">Précédent</button>
-      <button mat-button color="primary" (click)="nextStep()">Fin</button>
-    </mat-action-row>
-  </mat-expansion-panel>
 
-</mat-accordion>
+      <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Mangétoscope
+          </mat-panel-title>
+          <mat-panel-description>
+            Paramètres du magnétoscope
+            <mat-icon svgIcon="movie"></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-radio-group class="example-radio-group">
+          <mat-radio-button class="example-radio-button" value="jour">
+            Navigation par jour
+          </mat-radio-button>
+          <br>
+          <br>
+          <mat-radio-button class="example-radio-button" value="mois">
+            Navigation par mois
+          </mat-radio-button>
+        </mat-radio-group>
+        <p>
+          <mat-form-field>
+            <mat-select placeholder="Vitesse" [(ngModel)]="speed" name="vitesse">
+              <mat-option value="1300">Trés lent</mat-option>
+              <mat-option value="1000">Lent</mat-option>
+              <mat-option value="700">Moyen</mat-option>
+              <mat-option value="400">Rapide</mat-option>
+              <mat-option value="100">Trés rapide</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </p>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+          <button mat-button color="primary" (click)="nextStep();drawer.toggle();getData();">Charger les données</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>

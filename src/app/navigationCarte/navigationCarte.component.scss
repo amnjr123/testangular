@@ -1,20 +1,29 @@
 $Black:hsl(0, 0%, 0%);
 $Grey:#cfcece;
 
-  mat-slider {
-    width: 100%;
-  }
-span {
-    margin-left: 20px;
-    /*margin-right: 50px;
-    /*display:block;*/
-  }
+
+
+mat-slider{
+  width: 100%;
+}
+
+#navCarte{
+  display: flex;
+}
+
 #buttons{
-  width: 50%;
-  margin: 0 auto;
+  flex: 0 0 20%;
+  //float: left;
+  //margin: 10 auto;
+  //overflow:hidden;
+}
+#slider {
+  flex: 1;
+
+  //overflow:hidden;
 }
 
-.example-full-width {
-  width: 50px;
+app-olmap{
+  width: 100%;
+  height: 100%;
 }
-

@@ -10,7 +10,7 @@ export class Ligne {
   nomCommercial: string;
   type: string;
   geo: ol.layer.Vector;
-  arrets: Array<Arret> = [null];
+  arrets: Array<Arret> = new Array<Arret>();
   style: ol.style.Style;
   hstyle: ol.style.Style;
   hoverInteraction: ol.interaction.Select;
@@ -111,7 +111,7 @@ export class Ligne {
       }),
       text: new ol.style.Text({
         text: this.nomCommercial,
-        font: 'Bold 18px  \'Calibri\'',
+        font: 'Bold 18px  \'lato\'',
         fill: new ol.style.Fill({
           color: 'white'
         }),

@@ -129,4 +129,5 @@ export class NavigationCarte implements OnInit {
     this.playing = false;
     this.rewinding = false;
   }
+
 }

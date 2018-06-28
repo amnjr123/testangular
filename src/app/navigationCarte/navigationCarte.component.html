@@ -1,10 +1,11 @@
 <!--app-map [sliderValue]="sliderValue" [(ngModel)]="sliderValue" ngDefaultControl></app-map-->
+
 <app-olmap [sliderValue]='sliderValue'></app-olmap>
 <mat-card class="example-card">
   <mat-card-content>
     <div id="navCarte">
       <div id="buttons">
-        <span>
+        <!--span>
           <mat-button-toggle-group #group="matButtonToggleGroup" (click)="setNavType(navType)" [value]="navType" [(ngModel)]="navType">
             <mat-button-toggle value="3">
               Heure
@@ -19,41 +20,40 @@
               Année
             </mat-button-toggle>
           </mat-button-toggle-group>
-        </span>
-        <span>
-          <button mat-icon-button (click)="rewButtonClick(speed)" [disabled]="rewinding">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-        </span>
-        <span>
-          <button mat-icon-button (click)="playButtonClick(speed)" [disabled]="playing">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        </span>
-        <span>
-          <button mat-icon-button (click)="pauseButtonClick()">
-            <mat-icon>pause_circle_empty</mat-icon>
-          </button>
-        </span>
-        <span>
-          <button mat-icon-button (click)="setSliderValue(0)">
-            <mat-icon>replay</mat-icon>
-          </button>
-        </span>
-        <span>
-          <button mat-icon-button (click)="looping=!looping;">
-            <mat-icon *ngIf="!looping" style="color : lightgrey">loop</mat-icon>
-            <mat-icon *ngIf="looping" color="primary">loop</mat-icon>
-          </button>
-        </span>
-        <span>
+        </span-->
+
+        <button mat-icon-button (click)="rewButtonClick(speed)" [disabled]="rewinding">
+          <mat-icon svgIcon="keyboard_arrow_left"></mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="playButtonClick(speed)" [disabled]="playing">
+          <mat-icon svgIcon="keyboard_arrow_right"></mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="pauseButtonClick()">
+          <mat-icon svgIcon="pause"></mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="setSliderValue(0)">
+          <mat-icon svgIcon="replay"></mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="looping=!looping;">
+          <mat-icon *ngIf="!looping" style="color : lightgrey" svgIcon="loop1"></mat-icon>
+          <mat-icon *ngIf="looping" color="primary" svgIcon="loop1"></mat-icon>
+        </button>
+
+        <!--span>
           <mat-form-field class="example-full-width">
             <input matInput [value]="sliderValue" type="number" min="0" [max]="maxSliderValue" [(ngModel)]="sliderValue">
           </mat-form-field>
           <!--mat-form-field class="example-full-width">
       <input matInput [value]="sliderValue" (input)="limitSliderInputValue()" [(ngModel)]="sliderValue">
-    </mat-form-field-->
-        </span>
+    </mat-form-field->
+        </span-->
+
+
+        <!--A INTEGRER AUX PARAMETRES DU MAGNETO>
         <span>
           <mat-form-field>
             <mat-select placeholder="Vitesse" [(ngModel)]="speed" name="vitesse">
@@ -64,13 +64,20 @@
               <mat-option value="100">Trés rapide</mat-option>
             </mat-select>
           </mat-form-field>
-        </span>
+        </span-->
+
+
+
+
+
       </div>
-      <br>
-      <mat-slider thumbLabel tickInterval="{{maxSliderValue-minSliderValue+1}}" [min]="minSliderValue" [max]="maxSliderValue" [value]="sliderValue"
-        [(ngModel)]="sliderValue"></mat-slider>
+
+      <div id="slider">
+        <mat-slider thumbLabel tickInterval="{{maxSliderValue-minSliderValue+1}}" [min]="minSliderValue" [max]="maxSliderValue" [value]="sliderValue"
+          [(ngModel)]="sliderValue"></mat-slider>
+      </div>
 
     </div>
-    <!--div class="example-selected-value">Selected value: {{group.value}}</div-->
+
   </mat-card-content>
 </mat-card>

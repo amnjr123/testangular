@@ -1,12 +1,14 @@
 import { Component, OnInit, AfterViewInit, Injectable, Input, SimpleChanges } from '@angular/core';
 
 import * as ol from 'openlayers';
+import * as jsPDF from 'jspdf';
 
 import { DataConService } from '../services/data-con.service';
 import { GestionLigneArret } from '../Model/gestion-ligne-arret.service';
 import { MatSnackBar } from '@angular/material';
 import { Ligne } from '../Model/ligne';
 import { Arret } from '../Model/arret';
+import { Observable } from 'rxjs/Observable';
 
 
 @Component({
@@ -18,10 +20,14 @@ import { Arret } from '../Model/arret';
 //@Injectable()
 export class OlmapComponent implements OnInit, AfterViewInit {
 
-  constructor(private dataService: DataConService, private gestionLigneArret: GestionLigneArret, public snackBar: MatSnackBar) {
+  constructor(private dataService: DataConService, public gestionLigneArret: GestionLigneArret, public snackBar: MatSnackBar) {
     //this.lineData = new Array<any>();
     //this.stopLineData = new Array<any>();
     this.ponctualiteData = new Array<any>();
+    this.linesVisible = true;
+    this.stopsVisible = true;
+    this.dataVisible = true;
+
   }
 
   private geoServerHost: String = '10.205.8.226:4601';
@@ -44,18 +50,25 @@ export class OlmapComponent implements OnInit, AfterViewInit {
 
   //private stops: Array<ol.layer.Vector> = [null];
 
-  private listeLignes = this.gestionLigneArret.getLignes();
-  private selectedLine: Ligne;
-  private visibleLines: Array<Ligne> = [];
-  private visibleStops: Array<Arret> = [];
+  listeLignes = this.gestionLigneArret.getLignes();
+  loading: Observable<Boolean>;
+  loadingState;
+  selectedLine: Ligne;
+  visibleLines: Array<Ligne> = Array<Ligne>();
+  visibleStops: Array<Arret> = Array<Arret>();
 
-  private buttonLabel='get data';
+  linesVisible: Boolean = true;
+  stopsVisible: Boolean = true;
+  dataVisible: Boolean = true;
+  mapVisible: Boolean = true;
+  showData = false;
 
-  private ponctualiteData;
+  ponctualiteData;
 
-  private mois=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
+  mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
+  jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
-  @Input() sliderValue=1;
+  @Input() sliderValue = 1;
 
   /*
   genWfsUrl(typename: string, maxFeatures: string, viewparams: string) {
@@ -110,8 +123,70 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   */
   ngOnInit() {
+    this.gestionLigneArret.fetchDataObs.subscribe(tFiltre => {
+      this.removeAllLineStopLayers();
+      if (tFiltre === "persLinesSelectedLinesStops") {
+        //Lignes personnalisees avec arrets      
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLinesWithStops(ligne);
+        });
+
+      } else if (tFiltre === "persLinesPersStops") {
+        //Lignes et arrets personnalises
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLine(ligne);
+        });
+        this.gestionLigneArret.getSelectedStops().forEach(stop => {
+          this.showStop(stop);
+        });
+
+      } else if (tFiltre === "persLinesAllStops") {
+
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLine(ligne);
+        });
+        this.gestionLigneArret.getSelectedStops().forEach(stop => {
+          this.showStop(stop);
+        });
+
+      } else if (tFiltre === "allLinesPersStops") {
+
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLine(ligne);
+        });
+        this.gestionLigneArret.getSelectedStops().forEach(stop => {
+          this.showStop(stop);
+        });
+
+      } else if (tFiltre === "allLinesAllStops") {
+
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLine(ligne);
+        });
+        this.gestionLigneArret.getSelectedStops().forEach(stop => {
+          this.showStop(stop);
+        });
+
+      }
+
+    });
 
   }
+
+  removeAllLineStopLayers() {
+    //Remove Lines and Stops from map
+    this.visibleLines.forEach(element => {
+      this.map.removeLayer(element.getGeo());
+      this.map.removeInteraction(element.getHoverInteraction());
+    });
+    this.visibleLines = new Array<Ligne>();
+    this.visibleStops.forEach(arret => {
+      this.map.removeLayer(arret.getGeo());
+      this.map.removeInteraction(arret.getHoverInteraction());
+    });
+    this.visibleStops = new Array<Arret>();
+  }
+
   /*
     getLineShapes() {
       //Chargement Layers lignes
@@ -184,6 +259,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   */
   ngAfterViewInit() {
+
     //Polygones fond de carte
     var polygon = this.fetchMapLayer('osm:planet_osm_polygon', 3857, '');
 
@@ -196,18 +272,31 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     //Points Fond de carte
     var points = this.fetchMapLayer('osm:planet_osm_point', 3857, '');
 
-    //Arrets bus tram
-    var stops = this.fetchMapLayer('osm:testSqlView', 4326, '');
-
     this.mapLayers = [/*polygon, */roads, lines/*, points*/];
     //this.map = this.newOlMap(this.mapLayers, 'map');
     this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+
+    /*this.loading = this.gestionLigneArret.getLoading();
+    this.loading.subscribe({
+      next(value) {
+        var t: Boolean=value;
+        if (t) {
+          this.loadingState = 'Chargement en cours';
+          console.log(this.loadingState);
+        } else {
+          this.loadingState = 'chargement terminé';
+          console.log(this.loadingState);
+        }
+      }
+    });*/
   }
 
-  ngOnChanges(changes: SimpleChanges){
-    if (changes['sliderValue'] ){
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['sliderValue']) {
       //this.sliderValue=changes['sliderValue'].currentValue;
-      this.magnetoFwd(this.mois[this.sliderValue]);
+      try {
+        this.magnetoFwd(this.mois[this.sliderValue]);
+      } catch { }
     }
   }
 
@@ -280,149 +369,313 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       return layer;
     }
   */
-  showSelectedLine() {
-    if (this.selectedLine === undefined) {
+
+  showLinesWithStops(ligne: Ligne) {
+    if (ligne === undefined || ligne === null) {
       this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
     } else {
       try {
-        //console.log(this.selectedLine.getGeo());
-        this.map.addLayer(this.selectedLine.getGeo());
-        this.map.addInteraction(this.selectedLine.getHoverInteraction());
-        //this.selectedLine.highlight(1, 2000);
-        let color: string = this.selectedLine.getStyle().getStroke().getColor().toString();
-        let i = 1;
-        this.selectedLine.getArrets().forEach(arret => {
-          if (i === 1) {
-            i = 0;
-          } else {
-            arret.setStyle(new ol.style.Style({
-              image: new ol.style.Circle({
-                stroke: new ol.style.Stroke({
-                  color: color,
-                  width: 5
-                }),
-                radius: 8,
-                fill: new ol.style.Fill({
-                  color: '#FFFFFF'
-                })
-              }),
-              text: new ol.style.Text({
-                //text : arret.getNomCommercial(),
-                font: 'Bold 14px  \'Calibri\''
-              })
-            }));
-            this.map.addLayer(arret.getGeo());
-            this.visibleStops.push(arret);
-            this.map.addInteraction(arret.getHoverInteraction());
-          }
-        });
+        if (!this.linesVisible) {
+          ligne.getGeo().setVisible(false);
+        }
+        this.map.addLayer(ligne.getGeo());
+        this.map.addInteraction(ligne.getHoverInteraction());
 
+        let color: string = ligne.getStyle().getStroke().getColor().toString();
+        ligne.getArrets().forEach(arret => {
+          arret.setStyle(new ol.style.Style({
+            image: new ol.style.Circle({
+              stroke: new ol.style.Stroke({
+                color: color,
+                width: 5
+              }),
+              radius: 8,
+              fill: new ol.style.Fill({
+                color: '#FFFFFF'
+              })
+            }),
+            text: new ol.style.Text({
+              //text : arret.getNomCommercial(),
+              font: 'Bold 14px  \'lato\''
+            })
+          }));
+          if (!this.stopsVisible) {
+            arret.getGeo().setVisible(false);
+          }
+          this.map.addLayer(arret.getGeo());
+          this.visibleStops.push(arret);
+          this.map.addInteraction(arret.getHoverInteraction());
+        });
       } catch (e) {
-        this.selectedLine.highlight(5, 150);
+        ligne.highlight(5, 150);
         console.log(e);
       }
-      this.visibleLines.push(this.selectedLine);
+      this.visibleLines.push(ligne);
     }
   }
 
-  hideSelectedLine() {
-    if (this.selectedLine === undefined) {
+
+  showLine(ligne: Ligne) {
+    if (ligne === undefined || ligne === null) {
       this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
     } else {
       try {
-        this.map.removeLayer(this.selectedLine.getGeo());
-        this.map.removeInteraction(this.selectedLine.getHoverInteraction());
-        let i = 1;
-        this.selectedLine.getArrets().forEach(arret => {
-          if (i === 1) {
-            i = 0;
-          } else {
-            this.map.removeLayer(arret.getGeo());
-            this.map.removeInteraction(arret.getHoverInteraction());
-            const index: number = this.visibleStops.indexOf(arret);
-            if (index !== -1) {
-              this.visibleStops.splice(index, 1);
-            }
-            this.map.removeInteraction(arret.getHoverInteraction());
-          }
-        });
-
-        const index: number = this.visibleLines.indexOf(this.selectedLine);
-        if (index !== -1) {
-          this.visibleLines.splice(index, 1);
+        if (!this.linesVisible) {
+          ligne.getGeo().setVisible(false);
         }
-        console.log(this.visibleStops);
+        this.map.addLayer(ligne.getGeo());
+        this.map.addInteraction(ligne.getHoverInteraction());
+      } catch (e) {
+        ligne.highlight(5, 150);
+        console.log(e);
+      }
+      this.visibleLines.push(ligne);
+    }
+  }
+
+  showStop(arret: Arret) {
+    if (!this.stopsVisible) {
+      arret.getGeo().setVisible(false);
+    }
+    this.map.addLayer(arret.getGeo());
+    this.visibleStops.push(arret);
+    this.map.addInteraction(arret.getHoverInteraction());
+  }
+
+
+
+
+  /*
+    hideSelectedLine() {
+      if (this.selectedLine === undefined || this.selectedLine === null) {
+        this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
+      } else {
+        try {
+      this.map.removeLayer(this.selectedLine.getGeo());
+      this.map.removeInteraction(this.selectedLine.getHoverInteraction());
+      this.selectedLine.getArrets().forEach(arret => {
+        this.map.removeLayer(arret.getGeo());
+        this.map.removeInteraction(arret.getHoverInteraction());
+        const index: number = this.visibleStops.indexOf(arret);
+        this.visibleStops.splice(index, 1);
+        this.map.removeInteraction(arret.getHoverInteraction());
+      });
+   
+      const index: number = this.visibleLines.indexOf(this.selectedLine);
+      this.visibleLines.splice(index, 1);
+   
       } catch (e) {
         this.snackBar.open('Ligne non affichée', null, { duration: 1000 });
         console.log(e);
       }
     }
-  }
-
+    }
+  */
   showStopData() {
-    console.log(this.genStringArrets());
-    this.buttonLabel='Chargement des données';
-    this.dataService.getRetardArret(this.genStringArrets())
-    .subscribe(data => {
-      this.ponctualiteData=data;
-      console.log(this.ponctualiteData);
-      this.showDataOnMap();
-    }, err => {
-      console.log(err);
-    });
-  }
 
-  genStringArrets():string{
-    let str='';
+    this.gestionLigneArret.setFinishedLoading(false);
+    console.log(this.genStringArrets());
+    this.dataService.getRetardArret(this.genStringArrets())
+      .subscribe(data => {
+        this.ponctualiteData = data;
+        console.log(this.ponctualiteData);
+        this.showDataOnMap();
+        this.gestionLigneArret.setFinishedLoading(true);
+      }, err => {
+        console.log(err);
+      });
+  }
+  /*
+  showStopLineData() {
+    
+    this.gestionLigneArret.setFinishedLoading(false);  
+    this.dataService.getRetardLigneArret(this.selectedLine.getdbId(), '2017')
+      .subscribe(data => {
+        this.ponctualiteData = data;
+        this.gestionLigneArret.setFinishedLoading(true);  
+        console.log(this.ponctualiteData);   
+      }, err => {
+        console.log(err);
+      });
+  }
+  */
+  genStringArrets(): string {
+    let str = '';
     this.visibleStops.forEach(stop => {
-      str=str+stop.getId()+'\\,';
+      str = str + stop.getId() + '\\,';
     });
-    str=str+'00000000000';
+    str = str + '00000000000';
     return str;
   }
 
-  getArretById(id):Arret{
+  getArretById(id): Arret {
     let returnValue;
     this.visibleStops.forEach(arret => {
-      if(arret.getId()===id){
+      if (arret.getId() === id) {
         returnValue = arret;
       }
     });
     return returnValue;
   }
 
-  showDataOnMap(){
+  showDataOnMap() {
+    this.map.getInteractions().clear();
+    ol.interaction.defaults().forEach(interaction => {
+      this.map.addInteraction(interaction);
+    });
+
     this.visibleStops.forEach(arret => {
-      this.map.removeInteraction(arret.getHoverInteraction());
+      //this.map.removeInteraction(arret.getHoverInteraction()); NOT WORKING ???
       arret.initSizeData();
-  
-    });   
+    });
     this.ponctualiteData['features'].forEach(feature => {
       this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
     });
     this.visibleStops.forEach(arret => {
       arret.setSizeData();
       arret.initDataHoveredStyle();
+
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
+    this.gestionLigneArret.setFinishedLoading(true);
   }
 
-  magnetoFwd(mois:string){
+  magnetoFwd(mois: string) {
+    //console.log(this.map.getInteractions());
+    this.map.getInteractions().clear();
+    ol.interaction.defaults().forEach(interaction => {
+      this.map.addInteraction(interaction);
+    });
+
     this.visibleStops.forEach(arret => {
-      //this.map.removeInteraction(arret.getHoverInteraction());      
+      //this.map.removeInteraction(arret.getHoverInteraction()); NOT WORKING ???     
       arret.initSizeData();
-  
-    });   
+
+    });
     this.ponctualiteData['features'].forEach(feature => {
-      if(feature['properties']['Libelle_Mois']===mois){
+      if (feature['properties']['Libelle_Mois'] === mois) {
         this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
-      }      
+      }
     });
     this.visibleStops.forEach(arret => {
       arret.setSizeDataMagneto();
       arret.initDataHoveredStyle();
-      //this.map.addInteraction(arret.getDataHoverInteraction());
+      /*arret.getHoverInteraction().setProperties({
+        style : arret.getDHStyle()
+      });
+      this.map.getInteractions().forEach(interaction => {
+        if(interaction===arret.getHoverInteraction()){
+          console.log(interaction);
+        }
+      })*/
+
+      this.map.addInteraction(arret.getDataHoverInteraction());
     });
+  }
+
+  hideShowLines() {
+    if (this.linesVisible) {
+      if (!(this.visibleLines.length === 0)) {
+        this.visibleLines.forEach(line => {
+          line.getGeo().setVisible(false);
+        });
+      }
+      this.linesVisible = false;
+    } else {
+      if (!(this.visibleLines.length === 0)) {
+        this.visibleLines.forEach(line => {
+          line.getGeo().setVisible(true);
+        });
+      }
+      this.linesVisible = true;
+    }
+  }
+
+  hideShowStops() {
+    if (this.stopsVisible) {
+      if (!(this.visibleStops.length === 0)) {
+        this.visibleStops.forEach(stop => {
+          stop.getGeo().setVisible(false);
+        });
+      }
+      this.stopsVisible = false;
+    } else {
+      if (!(this.visibleStops.length === 0)) {
+        this.visibleStops.forEach(stop => {
+          stop.getGeo().setVisible(true);
+        });
+      }
+      this.stopsVisible = true;
+    }
+  }
+
+  hideShowMap() {
+    if (this.mapVisible) {
+      this.osmWorldMapLayers.forEach(element => {
+        element.setVisible(false);
+      });
+      this.mapVisible = false;
+    } else {
+      this.osmWorldMapLayers.forEach(element => {
+        element.setVisible(true);
+      });
+      this.mapVisible = true;
+    }
+  }
+
+
+  exportToPDF() {
+
+    var loading = 0;
+    var loaded = 0;
+
+    document.body.style.cursor = 'progress';
+
+    var format = 'a4';
+    var resolution = 72;
+    var dim = [297, 210];
+    var width = Math.round(dim[0] * resolution / 25.4);
+    var height = Math.round(dim[1] * resolution / 25.4);
+    var size = /** @type {ol.Size} */ (this.map.getSize());
+    var extent = this.map.getView().calculateExtent(size);
+
+    var source = this.osmWorldMapLayers[0].getSource();
+
+    var tileLoadStart = function () {
+      ++loading;
+    };
+
+    var tileLoadEnd = function () {
+      ++loaded;
+      if (loading === loaded) {
+        var canvas = this;
+        window.setTimeout(function () {
+          loading = 0;
+          loaded = 0;
+          var data = canvas.toDataURL('image/png');
+          var pdf = new jsPDF('landscape', undefined, format);
+          pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+          pdf.save('map.pdf');
+          source.un('tileloadstart', tileLoadStart);
+          source.un('tileloadend', tileLoadEnd, canvas);
+          source.un('tileloaderror', tileLoadEnd, canvas);
+          this.map.setSize(size);
+          this.map.getView().fit(extent);
+          this.map.renderSync();
+          document.body.style.cursor = 'auto';
+        }, 100);
+      }
+    };
+
+    this.map.once('postcompose', function (event) {
+      source.on('tileloadstart', tileLoadStart);
+      //source.on('tileloadend', tileLoadEnd, event.context.canvas);
+      //source.on('tileloaderror', tileLoadEnd, event.context.canvas);
+    });
+
+    this.map.setSize([width, height]);
+    this.map.getView().fit(extent);
+    this.map.renderSync();
   }
 
   /*

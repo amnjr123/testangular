@@ -8,7 +8,7 @@ import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Test Sgi';
+  title = 'Geo SGI : Analyse spatiale des données de transport en commun';
 
   constructor() {
   }

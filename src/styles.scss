@@ -5,3 +5,19 @@ html,body {
     margin:0;
     padding:0;
 }
+
+@font-face {
+    font-family: lato;
+    src: url(./assets/fonts/Lato/Lato-Regular.ttf) format("opentype");  
+  }
+
+  button.mat-menu-item {
+    line-height: 24px !important;
+  }
+  a.mat-menu-item > mat-icon {
+    margin-bottom: 14px;
+  }
+  .mat-icon svg {
+    height: 24px;
+    width: 24px;
+  }
