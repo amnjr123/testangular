@@ -40,7 +40,9 @@
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedBus()"><mat-icon svgIcon="close"></mat-icon></button>
+          <button mat-icon-button (click)="resetSelectedBus()">
+            <mat-icon svgIcon="close"></mat-icon>
+          </button>
           <br>
 
           <mat-icon matPrefix svgIcon="tram"></mat-icon>
@@ -51,7 +53,9 @@
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedTram()"><mat-icon svgIcon="close"></mat-icon></button>
+          <button mat-icon-button (click)="resetSelectedTram()">
+            <mat-icon svgIcon="close"></mat-icon>
+          </button>
         </span>
 
         <mat-action-row>
@@ -92,11 +96,13 @@
             <mat-select placeholder="Arrêts" [formControl]="arretFc" [(ngModel)]="selectedStops" multiple>
               <ng-container *ngFor="let arret of arrets">
                 <mat-option [value]="arret">{{arret.getNomCommercial()}}</mat-option>
-                
+
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedStops()"><mat-icon svgIcon="close"></mat-icon></button>
+          <button mat-icon-button (click)="resetSelectedStops()">
+            <mat-icon svgIcon="close"></mat-icon>
+          </button>
           <br>
         </span>
         <mat-action-row>
@@ -116,21 +122,39 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <p>
-          <mat-form-field appearance="outline">
-            <mat-label>Année</mat-label>
-            <input matInput placeholder="Année">
-          </mat-form-field>
+
+        <p style="width:500px">
           <mat-form-field>
-            <mat-select placeholder="Mois" [formControl]="moisFc" multiple>
+            <mat-select placeholder="Années">
+              <mat-option *ngFor="let a of annees" [value]="a">{{a}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </p>
+        <p style="width:500px">
+          <mat-form-field style="width:80%">
+            <mat-select placeholder="Mois" [formControl]="moisFc" [(ngModel)]="selectedMonths" multiple>
               <mat-option *ngFor="let m of mois" [value]="m">{{m}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
-            <mat-select placeholder="Jours de semaine" [formControl]="jourFc" multiple>
+          <button mat-icon-button (click)="allMonths();">
+            <mat-icon matPrefix svgIcon="select_all"></mat-icon>
+          </button>
+          <button mat-icon-button (click)="clearMonths();">
+            <mat-icon matPrefix svgIcon="close"></mat-icon>
+          </button>
+        </p>
+        <p style="width:500px">
+          <mat-form-field style="width:80%">
+            <mat-select placeholder="Jours de semaine" [formControl]="jourFc" [(ngModel)]="selectedDays" multiple>
               <mat-option *ngFor="let jour of jours" [value]="jour">{{jour}}</mat-option>
             </mat-select>
           </mat-form-field>
+          <button mat-icon-button (click)="allDays()">
+            <mat-icon matPrefix svgIcon="select_all"></mat-icon>
+          </button>
+          <button mat-icon-button (click)="clearDays()">
+            <mat-icon matPrefix svgIcon="close"></mat-icon>
+          </button>
         </p>
 
         <mat-action-row>

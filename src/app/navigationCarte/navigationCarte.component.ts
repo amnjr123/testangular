@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { timer } from 'rxjs/observable/timer';
+import { GestionLigneArret } from '../Model/gestion-ligne-arret.service';
 
 
 @Component({
@@ -24,9 +25,22 @@ export class NavigationCarte implements OnInit {
   navType: number = 0; //navigation type (day, month or year)
   speed: number = 1000; //Navigation speed
 
+  constructor(private gestionLigneArret:GestionLigneArret){
+
+  }
 
   ngOnInit() {
-
+    this.gestionLigneArret.fetchMgtSpeedObs.subscribe(tFiltre => {
+      this.speed=tFiltre;
+      if(this.playing){
+        this.pauseButtonClick();
+        this.playButtonClick(this.speed);
+      }
+      if(this.rewinding){
+        this.pauseButtonClick();
+        this.rewButtonClick(this.speed);
+      }
+    });
   }
 
   //Emits a notification when the slider value is changed

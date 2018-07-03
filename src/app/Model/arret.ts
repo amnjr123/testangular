@@ -11,8 +11,10 @@ export class Arret {
   hoverInteraction: ol.interaction.Select;
   dataHoverInteraction: ol.interaction.Select;
   sizeData:number=0;
+  data:Array<any>;
 
   constructor(id: number, nomCommercial: string, lat, lng) {
+    this.data= new Array<any>();  
     this.id = id;
     this.nomCommercial = nomCommercial;
     let point = ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857');
@@ -63,6 +65,10 @@ export class Arret {
     return this.dHStyle;  
   }
 
+  getData(){
+    return this.data;
+  }
+
   setNomCommercial(nom: string) {
     this.nomCommercial = nom;
   }
@@ -74,6 +80,10 @@ export class Arret {
     this.geo.setStyle(style);
   }
 
+  setData(data:Array<any>){
+    this.data=data;
+  }
+
   addSizeData(data:number){
     this.sizeData=this.sizeData+data;
   }
@@ -81,7 +91,7 @@ export class Arret {
   initSizeData(){
     this.sizeData=0;
   }
-
+/*
   setSizeData(){
     //this.sizeData=data;
     let size = this.sizeData/4000
@@ -102,6 +112,7 @@ export class Arret {
       })
     }));
   }
+*/
 
   getColor(value){
     var hue=((1-value)*120).toString(10);
@@ -118,11 +129,12 @@ export class Arret {
     }
     this.setStyle(new ol.style.Style({
       image: new ol.style.Circle({
-        stroke: new ol.style.Stroke({
+        snapToPixel:false,
+        /*stroke: new ol.style.Stroke({
           color: '#FFFFFF',
           width: 0
-        }),
-        radius: size*20,
+        }),*/
+        radius: size*15,
         fill: new ol.style.Fill({
           color: this.getColor(size)//'#06A1EF'
         })

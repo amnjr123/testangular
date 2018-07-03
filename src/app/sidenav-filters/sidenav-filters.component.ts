@@ -24,11 +24,14 @@ export class SidenavFiltersComponent implements OnInit {
   jourFc: FormControl;
   lignes: Array<Ligne>;
   arrets: Array<Arret>;
-  mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-  jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+  annees: Array<string>;
+  mois: Array<string> = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
+  jours: Array<string> = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   selectedBusLines:Array<Ligne>=new Array<Ligne>();
   selectedTramLines:Array<Ligne>=new Array<Ligne>();
   selectedStops:Array<Arret>=new Array<Arret>();
+  selectedDays:Array<string>=new Array<string>();
+  selectedMonths:Array<string>=new Array<string>();
   speed=700;
 
   
@@ -40,10 +43,11 @@ export class SidenavFiltersComponent implements OnInit {
     this.jourFc = new FormControl();
     this.lignes = this.gestionLigneArret.getLignes();
     this.arrets = this.gestionLigneArret.getArrets();
+    this.annees = this.gestionLigneArret.getAnnees();
   }
 
   ngOnInit() {
-
+    
   }
 
   isTram(ligne:Ligne){
@@ -94,11 +98,25 @@ export class SidenavFiltersComponent implements OnInit {
   resetSelectedStops(){
     this.selectedStops=[];
   }
+  allDays(){
+    this.selectedDays=this.jours;
+  }
+  clearDays(){
+    this.selectedDays=[];
+  }
+  allMonths(){
+    this.selectedMonths=this.mois;
+  }
+  clearMonths(){
+    this.selectedMonths=[];
+  }
 
   getData(){
 
     //console.log(this.gestionLigneArret.getSelectedLines());
     //console.log(this.gestionLigneArret.getSelectedStops()); 
+
+    this.gestionLigneArret.fetchMgtSpeedObs.next(this.speed);
 
     if (this.allLines){
       //Toutes les lignes

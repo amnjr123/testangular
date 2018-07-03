@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 export class GestionLigneArret {
 
   //private dataService: DataConService;
+  private annees:Array<string>;
   private lignes: Array<Ligne>;
   private arrets: Array<Arret>;
   private donneesArretsTemp;
@@ -24,12 +25,15 @@ export class GestionLigneArret {
   private selectedStops:Array<Arret>;
 
   fetchDataObs:Subject<any>=new Subject<any>();
+  fetchMgtSpeedObs:Subject<any>=new Subject<any>();
 
   constructor(private dataService: DataConService) {
+    this.annees = new Array<string>();
     this.selectedLines = new Array<Ligne>();
     this.selectedStops = new Array<Arret>();
     this.lignes = new Array<Ligne>();
     this.arrets = new Array<Arret>();
+    this.fetchYears();
     this.fetchLignesData();
     this.fetchStopData();
 
@@ -59,11 +63,26 @@ export class GestionLigneArret {
     return this.arrets;
   }
 
+  getAnnees(){
+    return this.annees;
+  }
+
   isLoading() {
     return this.fieldsFetched;
   }
   setFinishedLoading(l: boolean) {
     this.fieldsFetched = l;
+  }
+
+  //recuperer les annees
+  fetchYears(){
+    this.dataService.getAnnees().subscribe(data =>{
+      data['features'].forEach(feature => {
+        this.annees.push(feature['properties']['annees']);
+      });
+    }, err => {
+      console.log(err);
+    });
   }
 
   //Recupérer les données de lignes

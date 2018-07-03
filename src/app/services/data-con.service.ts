@@ -19,6 +19,11 @@ export class DataConService {
   genLineDataUrl() {
     return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:Geo_Ligne_Data&maxFeatures=500&outputFormat=application%2Fjson';
   }
+  
+  genAnneesUrl() {
+    return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:annees&maxFeatures=50&outputFormat=application%2Fjson';
+  }
+
 
   genStopDataUrl() {
     return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:Geo_Arrets_Data&maxFeatures=5000&outputFormat=application%2Fjson';
@@ -89,6 +94,15 @@ export class DataConService {
     });
   }
 
+  getAnnees(){
+    return this.http.get(this.genAnneesUrl()).map((data: any) => {
+      return data;
+    }, err => {
+      if (err) {
+        return err.json();
+      }
+    });
+  }
 
 
   /*

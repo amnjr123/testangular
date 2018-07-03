@@ -442,9 +442,6 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(arret.getHoverInteraction());
   }
 
-
-
-
   /*
     hideSelectedLine() {
       if (this.selectedLine === undefined || this.selectedLine === null) {
@@ -479,7 +476,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       .subscribe(data => {
         this.ponctualiteData = data;
         console.log(this.ponctualiteData);
-        this.showDataOnMap();
+        this.magnetoFwd(this.mois[this.sliderValue]);
         this.gestionLigneArret.setFinishedLoading(true);
       }, err => {
         console.log(err);
@@ -509,17 +506,15 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   }
 
   getArretById(id): Arret {
-    let returnValue;
-    this.visibleStops.forEach(arret => {
-      if (arret.getId() === id) {
-        returnValue = arret;
+    for(var i=0;this.visibleStops.length;i++){
+      if (this.visibleStops[i].getId() === id) {
+        return this.visibleStops[i];
       }
-    });
-    return returnValue;
+    }
   }
 
-  showDataOnMap() {
-    this.map.getInteractions().clear();
+  //showDataOnMap() {
+    /*this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
     });
@@ -530,15 +525,17 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     });
     this.ponctualiteData['features'].forEach(feature => {
       this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
-    });
-    this.visibleStops.forEach(arret => {
-      arret.setSizeData();
-      arret.initDataHoveredStyle();
+    });*/
+    //this.magnetoFwd(this.mois[this.sliderValue]);
+    /*this.visibleStops.forEach(arret => {
+      //arret.setSizeDataMagneto();
+      //arret.initDataHoveredStyle();
+      
 
       this.map.addInteraction(arret.getDataHoverInteraction());
-    });
-    this.gestionLigneArret.setFinishedLoading(true);
-  }
+    });*/
+    //this.gestionLigneArret.setFinishedLoading(true);
+  //}
 
   magnetoFwd(mois: string) {
     //console.log(this.map.getInteractions());
@@ -552,6 +549,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       arret.initSizeData();
 
     });
+
     this.ponctualiteData['features'].forEach(feature => {
       if (feature['properties']['Libelle_Mois'] === mois) {
         this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
