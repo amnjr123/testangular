@@ -37,6 +37,14 @@ export class OlmapComponent implements OnInit, AfterViewInit {
 
   private mapLayers;
   private osmWorldMapLayers = [new ol.layer.Tile({ source: new ol.source.OSM() })];
+  private arcGisWorldMapLayers = [new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+        'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+        'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    })
+  })];
   //private lignes: Array<ol.layer.Vector> = [null];
 
   //private lineData;
@@ -128,7 +136,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       if (tFiltre === "persLinesSelectedLinesStops") {
         //Lignes personnalisees avec arrets      
         this.gestionLigneArret.getSelectedLines().forEach(ligne => {
-          this.showLinesWithStops(ligne);
+          this.showLineWithStops(ligne);
         });
 
       } else if (tFiltre === "persLinesPersStops") {
@@ -273,22 +281,10 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     var points = this.fetchMapLayer('osm:planet_osm_point', 3857, '');
 
     this.mapLayers = [/*polygon, */roads, lines/*, points*/];
-    //this.map = this.newOlMap(this.mapLayers, 'map');
-    this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+    //this.map = this.newOlMap(this.mapLayers, 'map'); 
+    //this.map = this.newOlMap(this.osmWorldMapLayers, 'map');
+    this.map = this.newOlMap(this.arcGisWorldMapLayers, 'map');
 
-    /*this.loading = this.gestionLigneArret.getLoading();
-    this.loading.subscribe({
-      next(value) {
-        var t: Boolean=value;
-        if (t) {
-          this.loadingState = 'Chargement en cours';
-          console.log(this.loadingState);
-        } else {
-          this.loadingState = 'chargement terminé';
-          console.log(this.loadingState);
-        }
-      }
-    });*/
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -300,7 +296,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  newOlMap(layers, target: string) {
+  newOlMap(layers, target: string): ol.Map {
     return new ol.Map({
       target: target,
       layers: layers,
@@ -370,7 +366,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   */
 
-  showLinesWithStops(ligne: Ligne) {
+  showLineWithStops(ligne: Ligne) {
     if (ligne === undefined || ligne === null) {
       this.snackBar.open('Selectionnez une ligne', null, { duration: 2000 });
     } else {
@@ -469,7 +465,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   */
   showStopData() {
-
+    this.sliderValue=0;
     this.gestionLigneArret.setFinishedLoading(false);
     console.log(this.genStringArrets());
     this.dataService.getRetardArret(this.genStringArrets())
@@ -506,7 +502,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   }
 
   getArretById(id): Arret {
-    for(var i=0;this.visibleStops.length;i++){
+    for (var i = 0; this.visibleStops.length; i++) {
       if (this.visibleStops[i].getId() === id) {
         return this.visibleStops[i];
       }
@@ -514,31 +510,30 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   }
 
   //showDataOnMap() {
-    /*this.map.getInteractions().clear();
-    ol.interaction.defaults().forEach(interaction => {
-      this.map.addInteraction(interaction);
-    });
+  /*this.map.getInteractions().clear();
+  ol.interaction.defaults().forEach(interaction => {
+    this.map.addInteraction(interaction);
+  });
 
-    this.visibleStops.forEach(arret => {
-      //this.map.removeInteraction(arret.getHoverInteraction()); NOT WORKING ???
-      arret.initSizeData();
-    });
-    this.ponctualiteData['features'].forEach(feature => {
-      this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
-    });*/
-    //this.magnetoFwd(this.mois[this.sliderValue]);
-    /*this.visibleStops.forEach(arret => {
-      //arret.setSizeDataMagneto();
-      //arret.initDataHoveredStyle();
-      
+  this.visibleStops.forEach(arret => {
+    //this.map.removeInteraction(arret.getHoverInteraction()); NOT WORKING ???
+    arret.initSizeData();
+  });
+  this.ponctualiteData['features'].forEach(feature => {
+    this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
+  });*/
+  //this.magnetoFwd(this.mois[this.sliderValue]);
+  /*this.visibleStops.forEach(arret => {
+    //arret.setSizeDataMagneto();
+    //arret.initDataHoveredStyle();
+    
 
-      this.map.addInteraction(arret.getDataHoverInteraction());
-    });*/
-    //this.gestionLigneArret.setFinishedLoading(true);
+    this.map.addInteraction(arret.getDataHoverInteraction());
+  });*/
+  //this.gestionLigneArret.setFinishedLoading(true);
   //}
 
   magnetoFwd(mois: string) {
-    //console.log(this.map.getInteractions());
     this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
@@ -566,7 +561,6 @@ export class OlmapComponent implements OnInit, AfterViewInit {
           console.log(interaction);
         }
       })*/
-
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
@@ -612,9 +606,16 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       this.osmWorldMapLayers.forEach(element => {
         element.setVisible(false);
       });
+      this.arcGisWorldMapLayers.forEach(element => {
+        element.setVisible(false);
+      });
+      
       this.mapVisible = false;
     } else {
       this.osmWorldMapLayers.forEach(element => {
+        element.setVisible(true);
+      });
+      this.arcGisWorldMapLayers.forEach(element => {
         element.setVisible(true);
       });
       this.mapVisible = true;

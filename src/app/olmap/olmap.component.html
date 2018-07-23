@@ -11,6 +11,7 @@
   <mat-toolbar>
 
     {{mois[sliderValue]}}
+    
     <span class="example-fill-remaining-space"></span>
     <form>
       <!--mat-form-field style="width:500px;">
@@ -27,12 +28,12 @@
 
 
 
-    <button mat-icon-button (click)="hideShowLines()">
+    <button mat-icon-button matTooltip="Afficher/Masquer les lignes" (click)="hideShowLines()">
       <mat-icon *ngIf="!linesVisible" style="color : lightgrey" svgIcon="timeline"></mat-icon>
       <mat-icon *ngIf="linesVisible" style="color : darkblue" svgIcon="timeline"></mat-icon>
     </button>
 
-    <button mat-icon-button (click)="hideShowStops()">
+    <button mat-icon-button matTooltip="Afficher/Masquer les arrêts" (click)="hideShowStops()">
       <mat-icon *ngIf="!stopsVisible" style="color : lightgrey" svgIcon="stop"></mat-icon>
       <mat-icon *ngIf="stopsVisible" style="color : darkblue" svgIcon="stop"></mat-icon>
     </button>
@@ -42,12 +43,12 @@
       <mat-icon *ngIf="dataVisible" style="color : darkblue" svgIcon="data"></mat-icon>
     </button-->
 
-    <button mat-icon-button (click)="hideShowMap()">
+    <button mat-icon-button matTooltip="Afficher/Masquer le fond de carte" (click)="hideShowMap()">
       <mat-icon *ngIf="!mapVisible" style="color : lightgrey" svgIcon="map"></mat-icon>
       <mat-icon *ngIf="mapVisible" style="color : darkblue" svgIcon="map"></mat-icon>
     </button>
 
-    <button mat-icon-button (click)="exportToPDF()">
+    <button mat-icon-button matTooltip="Exporter en PDF" (click)="exportToPDF()">
       <mat-icon svgIcon="pdf"></mat-icon>
     </button>
 

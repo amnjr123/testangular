@@ -36,7 +36,6 @@ export class GestionLigneArret {
     this.fetchYears();
     this.fetchLignesData();
     this.fetchStopData();
-
   }
 
   getSelectedLines(){
@@ -158,11 +157,12 @@ export class GestionLigneArret {
     this.donneesArrets['features'].forEach(arret => {
 
       var id = arret['properties']['Arret_id'];
-      var nomCom = arret['properties']['Arret_NomLong']+' : '+arret['properties']['Arret_NomCommercial'];
+      var nomCom = arret['properties']['Arret_NomCommercial'];
+      var nomLong = arret['properties']['Arret_NomLong']
       var lat = arret['properties']['Lat'];
       var lng = arret['properties']['Long'];
 
-      var ar: Arret = new Arret(id,nomCom,lat,lng);
+      var ar: Arret = new Arret(id,nomLong,nomCom,lat,lng);
 
       this.arrets.push(ar);
     });
@@ -174,12 +174,33 @@ export class GestionLigneArret {
       .subscribe(data => {
         //this.donneesArretsTemp = data;
         data['features'].forEach(arret => {
-          let a = new Arret(arret['properties']['arret_id'], arret['properties']['Arret_NomCommercial'], arret['properties']['Lat'], arret['properties']['Long']);
+          let a = new Arret(arret['properties']['arret_id'],arret['properties']['Arret_NomLong'], arret['properties']['Arret_NomCommercial'], arret['properties']['Lat'], arret['properties']['Long']);
           line.addArret(a);
         });
       }, err => {
         console.log(err);
       });
+  }
+
+  //Recuperer les donnees
+  fetchData(annee:string, arrets:Array<Arret>, typeNavigation:string, jours:Array<string>, mois:Array<string>){
+    this.setFinishedLoading(false);
+
+    let nlArr:Array<string>=new Array<string>();
+    arrets.forEach(a=>{
+      nlArr.push(a.getNomLong());
+    });
+
+    if (typeNavigation==='jour'){
+
+      this.dataService.callNodeServer(annee, nlArr,jours, mois).subscribe(data =>{
+        console.log(data);
+          this.setFinishedLoading(true);
+      });
+
+    } else if (typeNavigation==='mois'){
+
+    }
   }
 
 }

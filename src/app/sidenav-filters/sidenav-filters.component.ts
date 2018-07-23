@@ -15,7 +15,7 @@ export class SidenavFiltersComponent implements OnInit {
 
   step = 0;
   allLines = false;
-  arretsSelectionType = 'pers';
+  arretsSelectionType = 'selectedLines';
   @Input() drawer;
   ligneTFc: FormControl;
   ligneBFc: FormControl;
@@ -30,8 +30,10 @@ export class SidenavFiltersComponent implements OnInit {
   selectedBusLines:Array<Ligne>=new Array<Ligne>();
   selectedTramLines:Array<Ligne>=new Array<Ligne>();
   selectedStops:Array<Arret>=new Array<Arret>();
+  selectedLinesStops:Array<Arret>=new Array<Arret>();
   selectedDays:Array<string>=new Array<string>();
   selectedMonths:Array<string>=new Array<string>();
+  selectedYear:string='2017';
   speed=700;
 
   
@@ -59,15 +61,6 @@ export class SidenavFiltersComponent implements OnInit {
     if (ligne.getType()==="Bus" && ligne.getSens()===1){
       return true
     } else return false;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['allLines']) {
-      console.log(this.allLines);
-      if (this.allLines) {
-        this.arretsSelectionType = 'all';
-      }
-    }
   }
 
   setStep(index: number) {
@@ -109,6 +102,21 @@ export class SidenavFiltersComponent implements OnInit {
   }
   clearMonths(){
     this.selectedMonths=[];
+  }
+
+  setSelectedLinesStops(){
+    this.selectedLinesStops=new Array<Arret>();
+    this.selectedBusLines.forEach(line=>{
+      line.getArrets().forEach(stop => {
+        this.selectedLinesStops.push(stop);
+      });
+    });
+    this.selectedTramLines.forEach(line=>{
+      line.getArrets().forEach(stop => {
+        this.selectedLinesStops.push(stop);
+      });
+    });
+    console.log(this.selectedLinesStops);
   }
 
   getData(){
@@ -154,6 +162,8 @@ export class SidenavFiltersComponent implements OnInit {
 
       }
     }
+
+    this.gestionLigneArret.fetchData(this.selectedYear,this.selectedStops,'jour',this.selectedDays,this.selectedMonths);
 
   }
 

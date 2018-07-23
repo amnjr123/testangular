@@ -69,8 +69,18 @@
       </div>
 
       <div id="slider">
-        <mat-slider thumbLabel tickInterval="{{maxSliderValue-minSliderValue+1}}" [min]="minSliderValue" [max]="maxSliderValue" [value]="sliderValue"
-          [(ngModel)]="sliderValue"></mat-slider>
+          <mat-slider step="1" tickInterval="1" [min]="minSliderValue" [max]="maxSliderValue" [value]="sliderValue"
+            [(ngModel)]="sliderValue"></mat-slider>
+        <br>
+        <div style="width: 100%; text-align: center">
+          {{mois[sliderValue]}}
+        </div>
+        <!--table style="width: 100%; text-align: center">
+          <tr>
+            <td *ngFor="let m of mois">{{m}}</td>
+          </tr>
+        </table-->
+
       </div>
 
     </div>

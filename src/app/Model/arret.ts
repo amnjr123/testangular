@@ -5,6 +5,7 @@ export class Arret {
 
   id: number;
   nomCommercial: string;
+  nomLong:string;
   geo;
   hStyle: ol.style.Style;
   dHStyle: ol.style.Style;
@@ -13,10 +14,11 @@ export class Arret {
   sizeData:number=0;
   data:Array<any>;
 
-  constructor(id: number, nomCommercial: string, lat, lng) {
+  constructor(id: number,nomLong:string, nomCommercial: string, lat, lng) {
     this.data= new Array<any>();  
     this.id = id;
     this.nomCommercial = nomCommercial;
+    this.nomLong = nomLong;
     let point = ol.proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857');
     this.geo = new ol.layer.Vector({
       source: new ol.source.Vector({
@@ -69,9 +71,18 @@ export class Arret {
     return this.data;
   }
 
+  getNomLong(){
+    return this.nomLong;
+  }
+
   setNomCommercial(nom: string) {
     this.nomCommercial = nom;
   }
+
+  setNomLong(nom:string){
+    this.nomLong=nom;
+  }
+
   setGeo(geo) {
     this.geo = geo
   }

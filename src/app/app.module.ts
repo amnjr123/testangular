@@ -1,4 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
+import 'hammerjs';
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { GestureConfig } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -23,6 +25,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatIconRegistry} from '@angular/material';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer} from '@angular/platform-browser';
 import { MapComponent } from './map/map.component';
 import { FormsModule } from '@angular/forms';
@@ -43,7 +46,6 @@ import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
     SidenavFiltersComponent
   ],
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
@@ -64,8 +66,10 @@ import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
     MatRadioModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatTooltipModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyA1d9oo9_e1cXgQxfXDd8Iohor7Tlqt3r4'
@@ -73,7 +77,7 @@ import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
 
   ],
   providers: [
-    DataConService,GestionLigneArret
+    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },DataConService,GestionLigneArret
   ],
   bootstrap: [AppComponent]
 })

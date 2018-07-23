@@ -14,7 +14,7 @@ export class NavigationCarte implements OnInit {
   nbYears: number = 5; //Number of years to be represented in the slider
   sliderParams = [0, 11, 0]; //Minimum value, maximum value, and value of the slider
   //@Output() onSliderValueChange: EventEmitter<any> = new EventEmitter();
-  sliderValue: number = 0; //Getting the slider value from parent component (app-root)
+  sliderValue: number = -1; //Getting the slider value from parent component (app-root)
   minSliderValue: number = this.sliderParams[0]; //minimum slider value
   maxSliderValue: number = this.sliderParams[1]; //maximum slider value
   timerAutoPlay = timer(); //Timer for the autoplay fuctionnality
@@ -24,6 +24,7 @@ export class NavigationCarte implements OnInit {
   looping: Boolean = false; //Wether the loop option is activated or not
   navType: number = 0; //navigation type (day, month or year)
   speed: number = 1000; //Navigation speed
+  mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
 
   constructor(private gestionLigneArret:GestionLigneArret){
 
