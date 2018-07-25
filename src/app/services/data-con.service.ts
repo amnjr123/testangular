@@ -119,7 +119,7 @@ export class DataConService {
     });
   }
 
-  callNodeServer(annee:string, arret:Array<string>,jour:Array<string>, mois:Array<string>) {
+  callNodeServerFPANPJ(annee:string, arret:Array<string>,jour:Array<string>, mois:Array<string>) {
     var i=0;
     var qry = "with t as ("
       +" Select * from OPENQUERY ([SGICUBE],'"
@@ -128,8 +128,8 @@ export class DataConService {
        +"} ON COLUMNS,  "
        +"NON EMPTY { ("
        +"[Date].[Annee].[Annee].ALLMEMBERS * "
-       +"[Date].[Mois].[Mois].ALLMEMBERS * "
-       +"[Date].[Numero Jour].[Numero Jour].ALLMEMBERS * "
+       //+"[Date].[Mois].[Mois].ALLMEMBERS * "
+       //+"[Date].[Numero Jour].[Numero Jour].ALLMEMBERS * "
        +"[Date].[Jour de la Semaine].[Jour de la Semaine].ALLMEMBERS * "
        +"[Arret].[Nom Long].[Nom Long].ALLMEMBERS "
        +") } DIMENSION PROPERTIES MEMBER_CAPTION,"
@@ -175,8 +175,8 @@ export class DataConService {
                       +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
       
       +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
-          +"convert(varchar,[[Date]].[Mois]].[Mois]].[MEMBER_CAPTION]]]) as mois,"
-          +"convert(varchar,[[Date]].[Numero Jour]].[Numero Jour]].[MEMBER_CAPTION]]]) as numJour,"
+          //+"convert(varchar,[[Date]].[Mois]].[Mois]].[MEMBER_CAPTION]]]) as mois,"
+          //+"convert(varchar,[[Date]].[Numero Jour]].[Numero Jour]].[MEMBER_CAPTION]]]) as numJour,"
           +"convert(varchar,[[Date]].[Jour de la Semaine]].[Jour de la Semaine]].[MEMBER_CAPTION]]]) as jour,"
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
@@ -191,7 +191,83 @@ export class DataConService {
     return this.http.post(this.nodeServerHost, req, {
       headers: headers
     }).map((data:any) => {
-      return data
+      return data['recordset']
+    });
+  }
+
+  callNodeServerFPANPM(annee:string, arret:Array<string>,jour:Array<string>, mois:Array<string>) {
+    var i=0;
+    var qry = "with t as ("
+      +" Select * from OPENQUERY ([SGICUBE],'"
+       +"SELECT NON EMPTY { "
+       +"[Measures].[Frequentation] "
+       +"} ON COLUMNS,  "
+       +"NON EMPTY { ("
+       +"[Date].[Annee].[Annee].ALLMEMBERS * "
+       +"[Date].[Mois].[Mois].ALLMEMBERS * "
+       //+"[Date].[Numero Jour].[Numero Jour].ALLMEMBERS * "
+       //+"[Date].[Jour de la Semaine].[Jour de la Semaine].ALLMEMBERS * "
+       +"[Arret].[Nom Long].[Nom Long].ALLMEMBERS "
+       +") } DIMENSION PROPERTIES MEMBER_CAPTION,"
+       +"MEMBER_UNIQUE_NAME ON ROWS "
+       +"FROM ( "
+        +"SELECT ( { ";
+          arret.forEach(arr =>{
+            i++;
+            if (i<arret.length){
+              qry = qry + "[Arret].[Nom Long].["+arr+"],";
+            } else {
+              qry = qry + "[Arret].[Nom Long].["+arr+"] ";
+              i=0;
+            }
+          }); 
+          qry = qry +"} ) ON COLUMNS "
+            +"FROM ( SELECT ( { ";
+              jour.forEach(j=>{
+                i++;
+                if (i<jour.length){
+                  qry=qry + "[Date].[Jour de la Semaine].["+j+"] ,";
+                } else {
+                  qry=qry + "[Date].[Jour de la Semaine].["+j+"]  ";
+                  i=0;
+                }    
+              });
+              qry = qry +"} ) ON COLUMNS "
+                +"FROM ( SELECT ( { ";
+                  mois.forEach(m=>{
+                    i++;
+                    if(i<mois.length){
+                      qry=qry + "[Date].[Mois].["+m+"],";
+                    } else {
+                      qry=qry + "[Date].[Mois].["+m+"] ";
+                      i=0;
+                    }
+                    
+                  });
+                  qry = qry +"} ) ON COLUMNS "
+                    +"FROM ( SELECT ( { "
+                      +"[Date].[Annee].[2017] "
+                      +"} ) ON COLUMNS "
+                      +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
+      
+      +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
+          +"convert(varchar,[[Date]].[Mois]].[Mois]].[MEMBER_CAPTION]]]) as mois,"
+          //+"convert(varchar,[[Date]].[Numero Jour]].[Numero Jour]].[MEMBER_CAPTION]]]) as numJour,"
+          //+"convert(varchar,[[Date]].[Jour de la Semaine]].[Jour de la Semaine]].[MEMBER_CAPTION]]]) as jour,"
+          +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
+          +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
+
+    console.log(qry);
+
+    let req = { q : qry};
+    const headers = new HttpHeaders()
+          .set('Authorization', 'my-auth-token')
+          .set('Content-Type', 'application/json');
+
+    return this.http.post(this.nodeServerHost, req, {
+      headers: headers
+    }).map((data:any) => {
+      return data['recordset']
     });
   }
 

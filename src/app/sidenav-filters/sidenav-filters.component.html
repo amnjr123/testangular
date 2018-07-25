@@ -87,17 +87,20 @@
           <br>
           <span *ngIf="arretsSelectionType==='selectedLines'">
             <mat-icon matPrefix svgIcon="stop"></mat-icon>
-            <mat-form-field style="width: 85%">
-              <mat-select placeholder="Arrêts des lignes selectionnées" [formControl]="arretFc" [(ngModel)]="selectedLinesStops" multiple>
+            <mat-form-field style="width: 75%">
+              <mat-select placeholder="Arrêts des lignes selectionnées" [formControl]="arretFc" [(ngModel)]="selectedSelectedLinesStops" multiple>
                 <ng-container *ngFor="let arret of selectedLinesStops">
                   <mat-option [value]="arret">{{arret.getNomLong()}} : {{arret.getNomCommercial()}}</mat-option>
   
                 </ng-container>
               </mat-select>
             </mat-form-field>
-            <button mat-icon-button (click)="resetSelectedStops()">
-              <mat-icon svgIcon="close"></mat-icon>
-            </button>
+            <button mat-icon-button (click)="allSelectedLinesStops();">
+                <mat-icon matPrefix svgIcon="select_all"></mat-icon>
+              </button>
+              <button mat-icon-button (click)="clearSelectedLinesStops();">
+                <mat-icon matPrefix svgIcon="close"></mat-icon>
+              </button>
             <br><br>
           </span>
           <mat-radio-button class="example-radio-button" value="pers">
@@ -191,7 +194,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <mat-radio-group class="example-radio-group">
+        <mat-radio-group class="example-radio-group" [(ngModel)]='navType'>
           <mat-radio-button class="example-radio-button" value="jour">
             Pas par jour
           </mat-radio-button>

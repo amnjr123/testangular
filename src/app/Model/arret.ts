@@ -13,6 +13,8 @@ export class Arret {
   dataHoverInteraction: ol.interaction.Select;
   sizeData:number=0;
   data:Array<any>;
+  monthData={'Janvier':0,'Février':0,'Mars':0,'Avril':0,'Mai':0,'Juin':0,'Juillet':0,'Aout':0,'Septembre':0,'Octobre':0,'Novembre':0,'Décembre':0};
+  dayData={'Lundi':0,'Mardi':0,'Mercredi':0,'Jeudi':0,'Vendredi':0,'Samedi':0,'Dimanche':0};  
 
   constructor(id: number,nomLong:string, nomCommercial: string, lat, lng) {
     this.data= new Array<any>();  
@@ -71,8 +73,24 @@ export class Arret {
     return this.data;
   }
 
+  getMonthData(){
+    return this.monthData;
+  }
+
+  getDayData(){
+    return this.dayData;
+  }
+
   getNomLong(){
     return this.nomLong;
+  }
+
+  setDayData(day:string,data:number){
+    this.dayData[day]=data;
+  }
+
+  setMonthData(month:string,data:number){
+    this.monthData[month]=data;
   }
 
   setNomCommercial(nom: string) {
@@ -102,6 +120,15 @@ export class Arret {
   initSizeData(){
     this.sizeData=0;
   }
+
+  clearMonthData(){
+    this.monthData={'Janvier':0,'Février':0,'Mars':0,'Avril':0,'Mai':0,'Juin':0,'Juillet':0,'Aout':0,'Septembre':0,'Octobre':0,'Novembre':0,'Décembre':0};
+  }
+
+  cleardayData(){
+    this.dayData={'Lundi':0,'Mardi':0,'Mercredi':0,'Jeudi':0,'Vendredi':0,'Samedi':0,'Dimanche':0};  
+  }
+
 /*
   setSizeData(){
     //this.sizeData=data;
@@ -156,6 +183,68 @@ export class Arret {
       })
     }));
 
+  }
+
+  setMonthDataStyle(month:string){
+    //console.log(this.monthData);
+        let size = 0;
+        if (this.monthData[month]>=15000){
+          size=1
+        } else {
+          size = this.monthData[month]/15000;
+        }
+        this.setStyle(new ol.style.Style({
+          image: new ol.style.Circle({
+            snapToPixel:false,
+            radius: size*12,
+            fill: new ol.style.Fill({
+              color: this.getColor(1-size)
+            })
+          }),
+          text: new ol.style.Text({
+            //text:this.getMonthData()[month].toString(),
+            font: 'Bold 14px  \'lato\''
+          })
+        }));
+  }
+
+  setMonthDataHoveredStyle(month:string){
+    let size = 0;
+    if (this.monthData[month]>=15000){
+      size=1
+    } else {
+      size = this.monthData[month]/15000;
+    }
+
+    let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.monthData[month]+' Montées en '+month;
+    let textLength = text.length;
+
+
+    this.dHStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+        stroke: new ol.style.Stroke({
+          color: '#FFFFFF',
+          width: 3
+        }),
+        radius: textLength*2.5,
+        fill: new ol.style.Fill({
+          color: this.getColor(1-size)
+        })
+      }),
+      text: new ol.style.Text({
+        text : text,
+        font: 'Bold 14px  \'lato\'',
+        fill: new ol.style.Fill({
+          color: 'white'
+        }),
+      })
+    });
+
+    this.dataHoverInteraction = new ol.interaction.Select({
+      condition: ol.events.condition.pointerMove,
+      style: this.dHStyle,
+      layers: [this.geo]
+    });
   }
 
   initHoveredStyle(){

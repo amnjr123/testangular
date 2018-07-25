@@ -133,10 +133,22 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.gestionLigneArret.fetchDataObs.subscribe(tFiltre => {
       this.removeAllLineStopLayers();
+/*
       if (tFiltre === "persLinesSelectedLinesStops") {
         //Lignes personnalisees avec arrets      
         this.gestionLigneArret.getSelectedLines().forEach(ligne => {
           this.showLineWithStops(ligne);
+        });
+
+      }
+*/
+      if (tFiltre === "persLinesSelectedLinesStops") {
+        //Lignes personnalisees avec arrets      
+        this.gestionLigneArret.getSelectedLines().forEach(ligne => {
+          this.showLine(ligne);
+        });
+        this.gestionLigneArret.getSelectedStops().forEach(stop => {
+          this.showStop(stop);
         });
 
       } else if (tFiltre === "persLinesPersStops") {
@@ -538,29 +550,23 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
     });
-
+    /*
     this.visibleStops.forEach(arret => {
-      //this.map.removeInteraction(arret.getHoverInteraction()); NOT WORKING ???     
       arret.initSizeData();
-
     });
 
     this.ponctualiteData['features'].forEach(feature => {
       if (feature['properties']['Libelle_Mois'] === mois) {
         this.getArretById(feature['properties']['Arret_id']).addSizeData(feature['properties']['Nb_Departs_Retard']);
       }
-    });
+    });*/
+
     this.visibleStops.forEach(arret => {
-      arret.setSizeDataMagneto();
-      arret.initDataHoveredStyle();
-      /*arret.getHoverInteraction().setProperties({
-        style : arret.getDHStyle()
-      });
-      this.map.getInteractions().forEach(interaction => {
-        if(interaction===arret.getHoverInteraction()){
-          console.log(interaction);
-        }
-      })*/
+      //arret.setSizeDataMagneto();
+      //arret.initDataHoveredStyle();
+      arret.setMonthDataHoveredStyle(mois);
+      arret.setMonthDataStyle(mois);
+      //console.log(arret.getMonthData());
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }

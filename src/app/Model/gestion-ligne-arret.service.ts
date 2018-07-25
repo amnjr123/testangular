@@ -27,6 +27,9 @@ export class GestionLigneArret {
   fetchDataObs:Subject<any>=new Subject<any>();
   fetchMgtSpeedObs:Subject<any>=new Subject<any>();
 
+  arretsSetObs:Subject<any>=new Subject<any>();
+
+
   constructor(private dataService: DataConService) {
     this.annees = new Array<string>();
     this.selectedLines = new Array<Ligne>();
@@ -64,6 +67,10 @@ export class GestionLigneArret {
 
   getAnnees(){
     return this.annees;
+  }
+
+  getArretsSetOBS(){
+    return this.arretsSetObs;
   }
 
   isLoading() {
@@ -182,6 +189,14 @@ export class GestionLigneArret {
       });
   }
 
+  findArretByNomLong(nomLong:string):Arret{
+    for(let i=1;i<this.arrets.length;i++){
+      if (this.arrets[i].getNomLong()===nomLong){
+        return this.arrets[i];
+      }
+    }
+  }
+
   //Recuperer les donnees
   fetchData(annee:string, arrets:Array<Arret>, typeNavigation:string, jours:Array<string>, mois:Array<string>){
     this.setFinishedLoading(false);
@@ -191,14 +206,34 @@ export class GestionLigneArret {
       nlArr.push(a.getNomLong());
     });
 
+    this.arrets.forEach(arret=>{
+      arret.cleardayData();
+      arret.clearMonthData();
+    })
+
     if (typeNavigation==='jour'){
 
-      this.dataService.callNodeServer(annee, nlArr,jours, mois).subscribe(data =>{
+      this.dataService.callNodeServerFPANPJ(annee, nlArr,jours, mois).subscribe(data =>{
         console.log(data);
+        data.forEach(d => {
+          this.findArretByNomLong(d['arret']).setDayData(d['jour'],d['freq']);
+        });
           this.setFinishedLoading(true);
+          this.arretsSetObs.next(true);
+          console.log(this.arrets[50].getDayData());
       });
 
     } else if (typeNavigation==='mois'){
+
+      this.dataService.callNodeServerFPANPM(annee, nlArr,jours, mois).subscribe(data =>{
+        console.log(data);
+        data.forEach(d => {
+          this.findArretByNomLong(d['arret']).setMonthData(d['mois'],d['freq']);
+        });
+          this.setFinishedLoading(true);
+          this.arretsSetObs.next(true);
+          console.log(this.arrets[50].getMonthData());
+      });
 
     }
   }

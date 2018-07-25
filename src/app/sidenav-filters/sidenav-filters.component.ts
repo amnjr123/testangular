@@ -31,9 +31,11 @@ export class SidenavFiltersComponent implements OnInit {
   selectedTramLines:Array<Ligne>=new Array<Ligne>();
   selectedStops:Array<Arret>=new Array<Arret>();
   selectedLinesStops:Array<Arret>=new Array<Arret>();
+  selectedSelectedLinesStops:Array<Arret>=new Array<Arret>();
   selectedDays:Array<string>=new Array<string>();
   selectedMonths:Array<string>=new Array<string>();
   selectedYear:string='2017';
+  navType:string='jour';
   speed=700;
 
   
@@ -49,7 +51,56 @@ export class SidenavFiltersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.gestionLigneArret.getArretsSetOBS().subscribe(l=>{
+      if (l){
+
+        this.gestionLigneArret.fetchMgtSpeedObs.next(this.speed);
+
+        if (this.allLines){
+          //Toutes les lignes
+          if (this.arretsSelectionType==="all"){
+            //Toutes les lignes, tout les arrets
+            this.gestionLigneArret.setSelectedStops(this.gestionLigneArret.getArrets());
+            this.gestionLigneArret.setSelectedLines(this.gestionLigneArret.getLignes());
+            this.gestionLigneArret.fetchDataObs.next("allLinesAllStops");
     
+          } else if (this.arretsSelectionType==="pers") {
+            //Toutes les lignes, arrets personnalisés
+            this.gestionLigneArret.setSelectedStops(this.selectedStops);
+            this.gestionLigneArret.setSelectedLines(this.gestionLigneArret.getLignes());
+            this.gestionLigneArret.fetchDataObs.next("allLinesPersStops");
+          }
+        } else {
+          //Selecion personnalisee de lignes
+          if (this.arretsSelectionType==="all"){
+            //Lignes Perso, tout les arrets
+            this.gestionLigneArret.setSelectedStops(this.gestionLigneArret.getArrets());
+            this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
+            this.gestionLigneArret.fetchDataObs.next("persLinesAllStops");
+    
+          } else if (this.arretsSelectionType==="pers") {
+            //Lignes perso, arrets selectionnes
+            this.gestionLigneArret.setSelectedStops(this.selectedStops);
+            this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
+            this.gestionLigneArret.fetchDataObs.next("persLinesPersStops");
+    
+          } else if (this.arretsSelectionType==="selectedLines"){
+            //Lignes perso, arrets des lignes
+            //this.selectedStops=this.selectedSelectedLinesStops;
+            this.gestionLigneArret.setSelectedStops(this.selectedSelectedLinesStops);
+            this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
+            this.gestionLigneArret.fetchDataObs.next("persLinesSelectedLinesStops");
+
+            this.syncStopData();
+            
+            this.selectedSelectedLinesStops.forEach(element => {
+              console.log(element.getMonthData());
+            });
+    
+          }
+        }
+      }
+    });
   }
 
   isTram(ligne:Ligne){
@@ -104,6 +155,14 @@ export class SidenavFiltersComponent implements OnInit {
     this.selectedMonths=[];
   }
 
+  allSelectedLinesStops(){
+    this.selectedSelectedLinesStops=this.selectedLinesStops;
+  }
+
+  clearSelectedLinesStops(){
+    this.selectedSelectedLinesStops=[];
+  }
+
   setSelectedLinesStops(){
     this.selectedLinesStops=new Array<Arret>();
     this.selectedBusLines.forEach(line=>{
@@ -119,51 +178,27 @@ export class SidenavFiltersComponent implements OnInit {
     console.log(this.selectedLinesStops);
   }
 
+  syncStopData(){
+    this.selectedStops.forEach(stop => {
+      stop.monthData=this.gestionLigneArret.findArretByNomLong(stop.getNomLong()).getMonthData();
+    });
+  }
+
   getData(){
 
     //console.log(this.gestionLigneArret.getSelectedLines());
     //console.log(this.gestionLigneArret.getSelectedStops()); 
 
-    this.gestionLigneArret.fetchMgtSpeedObs.next(this.speed);
 
-    if (this.allLines){
-      //Toutes les lignes
-      if (this.arretsSelectionType==="all"){
-        //Toutes les lignes, tout les arrets
-        this.gestionLigneArret.setSelectedStops(this.gestionLigneArret.getArrets());
-        this.gestionLigneArret.setSelectedLines(this.gestionLigneArret.getLignes());
-        this.gestionLigneArret.fetchDataObs.next("allLinesAllStops");
-
-      } else if (this.arretsSelectionType==="pers") {
-        //Toutes les lignes, arrets personnalisés
-        this.gestionLigneArret.setSelectedStops(this.selectedStops);
-        this.gestionLigneArret.setSelectedLines(this.gestionLigneArret.getLignes());
-        this.gestionLigneArret.fetchDataObs.next("allLinesPersStops");
-      }
-    } else {
-      //Selecion personnalisee de lignes
-      if (this.arretsSelectionType==="all"){
-        //Lignes Perso, tout les arrets
-        this.gestionLigneArret.setSelectedStops(this.gestionLigneArret.getArrets());
-        this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
-        this.gestionLigneArret.fetchDataObs.next("persLinesAllStops");
-
-      } else if (this.arretsSelectionType==="pers") {
-        //Lignes perso, arrets selectionnes
-        this.gestionLigneArret.setSelectedStops(this.selectedStops);
-        this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
-        this.gestionLigneArret.fetchDataObs.next("persLinesPersStops");
-
-      } else if (this.arretsSelectionType==="selectedLines"){
+    if (!this.allLines){
+      if (this.arretsSelectionType==="selectedLines"){
         //Lignes perso, arrets des lignes
-        this.gestionLigneArret.setSelectedStops(null);
-        this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
-        this.gestionLigneArret.fetchDataObs.next("persLinesSelectedLinesStops");
-
+        this.selectedStops=this.selectedSelectedLinesStops;
       }
     }
 
-    this.gestionLigneArret.fetchData(this.selectedYear,this.selectedStops,'jour',this.selectedDays,this.selectedMonths);
+    this.gestionLigneArret.fetchData(this.selectedYear,this.selectedStops,this.navType,this.selectedDays,this.selectedMonths);
+
 
   }
 
