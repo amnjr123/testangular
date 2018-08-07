@@ -191,7 +191,7 @@ export class DataConService {
     return this.http.post(this.nodeServerHost, req, {
       headers: headers
     }).map((data:any) => {
-      return data['recordset']
+      return data
     });
   }
 
@@ -267,7 +267,7 @@ export class DataConService {
     return this.http.post(this.nodeServerHost, req, {
       headers: headers
     }).map((data:any) => {
-      return data['recordset']
+      return data
     });
   }
 
@@ -345,7 +345,7 @@ export class DataConService {
     return this.http.post(this.nodeServerHost, req, {
       headers: headers
     }).map((data:any) => {
-      return data['recordset']
+      return data
     });
   }
 
