@@ -36,6 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataConService } from './services/data-con.service';
 import { SidenavFiltersComponent } from './sidenav-filters/sidenav-filters.component';
 import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
+import { OlheatmapComponent } from './olheatmap/olheatmap.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { GestionLigneArret } from './Model/gestion-ligne-arret.service';
     NavigationCarte,
     MapComponent,
     OlmapComponent,
-    SidenavFiltersComponent
+    SidenavFiltersComponent,
+    OlheatmapComponent
   ],
   imports: [
     BrowserAnimationsModule,

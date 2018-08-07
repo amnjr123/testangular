@@ -21,7 +21,7 @@ app.all("/*", function(req, res, next){
 });
 
 app.post('/sqlqry', function (req, res) {
-    
+
     sql.close();
     sql.connect(config, function (err) {
         if (err) console.log(err);
@@ -29,6 +29,7 @@ app.post('/sqlqry', function (req, res) {
         sqlreq.query(req.body.q, function (err, recordset) {
             if (err) res.send(err);
             res.send(recordset);
+            console.log(recordset);
         });
     });
 

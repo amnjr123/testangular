@@ -201,6 +201,11 @@ export class GestionLigneArret {
   fetchData(annee:string, arrets:Array<Arret>, typeNavigation:string, jours:Array<string>, mois:Array<string>){
     this.setFinishedLoading(false);
 
+    /*let numArrets=arrets.length;
+    numArrets=350;
+    let iterations = 1+((numArrets-(numArrets % 100))/100);
+    let lastIteration = iterations;
+*/
     let nlArr:Array<string>=new Array<string>();
     arrets.forEach(a=>{
       nlArr.push(a.getNomLong());
@@ -209,6 +214,9 @@ export class GestionLigneArret {
     this.arrets.forEach(arret=>{
       arret.cleardayData();
       arret.clearMonthData();
+      arret.clearHourData();
+      arret.clearDayHourData();
+
     })
 
     if (typeNavigation==='jour'){
@@ -220,7 +228,7 @@ export class GestionLigneArret {
         });
           this.setFinishedLoading(true);
           this.arretsSetObs.next(true);
-          console.log(this.arrets[50].getDayData());
+          this.arretsSetObs.next('jour');
       });
 
     } else if (typeNavigation==='mois'){
@@ -232,10 +240,36 @@ export class GestionLigneArret {
         });
           this.setFinishedLoading(true);
           this.arretsSetObs.next(true);
-          console.log(this.arrets[50].getMonthData());
+          this.arretsSetObs.next('mois');
+      });
+
+    } else if (typeNavigation==='heure'){
+
+      this.dataService.callNodeServerFPANPH(annee, nlArr,jours, mois).subscribe(data =>{
+        console.log(data);
+        data.forEach(d => {
+          this.findArretByNomLong(d['arret']).setHourData(d['heure'],d['freq']);
+        });
+          this.setFinishedLoading(true);
+          this.arretsSetObs.next(true);
+          this.arretsSetObs.next('heure');
+      });
+
+    } else if (typeNavigation==='jourHeure'){
+
+      this.dataService.callNodeServerFPANPDH(annee, nlArr,jours, mois).subscribe(data =>{
+        console.log(data);
+        data.forEach(d => {
+          this.findArretByNomLong(d['arret']).setDayHourData(d['jour'],d['heure'],d['freq']);
+          //console.log(d['jour']+' '+d['heure']+' '+d['freq']);
+        });
+          this.setFinishedLoading(true);
+          this.arretsSetObs.next(true);
+          this.arretsSetObs.next('jourHeure');
       });
 
     }
+
   }
 
 }

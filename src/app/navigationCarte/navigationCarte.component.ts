@@ -24,13 +24,27 @@ export class NavigationCarte implements OnInit {
   looping: Boolean = false; //Wether the loop option is activated or not
   navType: number = 0; //navigation type (day, month or year)
   speed: number = 1000; //Navigation speed
-  mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
 
   constructor(private gestionLigneArret:GestionLigneArret){
 
   }
 
   ngOnInit() {
+
+    this.gestionLigneArret.getArretsSetOBS().subscribe(l=>{
+      if(l==='jour'){
+        this.maxSliderValue=6;
+      }
+      if(l==='mois'){
+        this.maxSliderValue=11;
+      }
+      if(l==='heure'){
+        this.maxSliderValue=23;
+      }
+      if(l==='jourHeure'){
+        this.maxSliderValue=167;
+      }
+    });
     this.gestionLigneArret.fetchMgtSpeedObs.subscribe(tFiltre => {
       this.speed=tFiltre;
       if(this.playing){

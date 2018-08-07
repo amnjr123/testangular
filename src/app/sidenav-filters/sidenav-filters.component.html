@@ -4,7 +4,7 @@
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title>
-      Nombre de départs en retard par arrêt
+      Nombre de validations par arrêt
     </mat-card-title>
     <mat-card-subtitle>Filtres</mat-card-subtitle>
   </mat-card-header>
@@ -176,6 +176,8 @@
           </button>
         </p>
 
+        
+
         <mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">Précédent</button>
           <button mat-button color="primary" (click)="nextStep()">Suivant</button>
@@ -202,6 +204,16 @@
           <br>
           <mat-radio-button class="example-radio-button" value="mois">
             Pas par mois
+          </mat-radio-button>
+          <br>
+          <br>
+          <mat-radio-button class="example-radio-button" value="heure">
+            Pas par période horaire
+          </mat-radio-button>
+          <br>
+          <br>
+          <mat-radio-button class="example-radio-button" value="jourHeure">
+            Pas par jour et période horaire
           </mat-radio-button>
         </mat-radio-group>
         <p>

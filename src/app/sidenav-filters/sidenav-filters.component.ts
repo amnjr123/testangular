@@ -52,7 +52,7 @@ export class SidenavFiltersComponent implements OnInit {
 
   ngOnInit() {
     this.gestionLigneArret.getArretsSetOBS().subscribe(l=>{
-      if (l){
+      if (l===true){
 
         this.gestionLigneArret.fetchMgtSpeedObs.next(this.speed);
 
@@ -92,10 +92,10 @@ export class SidenavFiltersComponent implements OnInit {
             this.gestionLigneArret.fetchDataObs.next("persLinesSelectedLinesStops");
 
             this.syncStopData();
-            
+            /*
             this.selectedSelectedLinesStops.forEach(element => {
               console.log(element.getMonthData());
-            });
+            });*/
     
           }
         }
@@ -181,7 +181,11 @@ export class SidenavFiltersComponent implements OnInit {
   syncStopData(){
     this.selectedStops.forEach(stop => {
       stop.monthData=this.gestionLigneArret.findArretByNomLong(stop.getNomLong()).getMonthData();
+      stop.dayData=this.gestionLigneArret.findArretByNomLong(stop.getNomLong()).getDayData();
+      stop.hourData=this.gestionLigneArret.findArretByNomLong(stop.getNomLong()).getHourData();
+      stop.dayHourData=this.gestionLigneArret.findArretByNomLong(stop.getNomLong()).getDayHourData();
     });
+    
   }
 
   getData(){
