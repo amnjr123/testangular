@@ -16,3 +16,8 @@
   background-image: url('../../assets/med/validation.jpg');
   background-size: cover; 
 }
+
+.downScaledIco {
+  vertical-align: middle !important;
+  transform: scale(0.70);
+}

@@ -1,4 +1,3 @@
-
 <mat-card>
   <!-- [style.backgroundColor]="'lightGray'" -->
   <mat-card-header>
@@ -21,7 +20,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
         <mat-radio-group class="example-radio-group" [(ngModel)]="allLines">
-          <mat-radio-button class="example-radio-button" [value]="true" (click)="arretsSelectionType='pers'">
+          <mat-radio-button class="example-radio-button" [value]="true" (click)="arretsSelectionType='pers'" disabled="true">
             Toutes les lignes (Bus et tram)
           </mat-radio-button>
           <br>
@@ -41,8 +40,8 @@
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedBus()">
-            <mat-icon svgIcon="close"></mat-icon>
+          <button mat-icon-button matTooltip="Tout déselectionner" (click)="resetSelectedBus()">
+            <mat-icon class="downScaledIco" svgIcon="close"></mat-icon>
           </button>
           <br>
 
@@ -54,14 +53,14 @@
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedTram()">
-            <mat-icon svgIcon="close"></mat-icon>
+          <button mat-icon-button matTooltip="Tout déselectionner" (click)="resetSelectedTram()">
+            <mat-icon class="downScaledIco" svgIcon="close"></mat-icon>
           </button>
         </span>
 
-        <mat-action-row>
+        <!--mat-action-row>
           <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row>
+        </mat-action-row-->
       </mat-expansion-panel>
 
       <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
@@ -75,7 +74,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
         <mat-radio-group class="example-radio-group" [(ngModel)]="arretsSelectionType">
-          <mat-radio-button class="example-radio-button" value="all">
+          <mat-radio-button class="example-radio-button" value="all" disabled="true">
             Tous les arrêts
           </mat-radio-button>
           <br *ngIf="!allLines">
@@ -88,20 +87,22 @@
           <span *ngIf="arretsSelectionType==='selectedLines'">
             <mat-icon matPrefix svgIcon="stop"></mat-icon>
             <mat-form-field style="width: 75%">
-              <mat-select placeholder="Arrêts des lignes selectionnées" [formControl]="arretFc" [(ngModel)]="selectedSelectedLinesStops" multiple>
+              <mat-select placeholder="Arrêts des lignes selectionnées" [formControl]="arretFc" [(ngModel)]="selectedSelectedLinesStops"
+                multiple>
                 <ng-container *ngFor="let arret of selectedLinesStops">
                   <mat-option [value]="arret">{{arret.getNomLong()}} : {{arret.getNomCommercial()}}</mat-option>
-  
+
                 </ng-container>
               </mat-select>
             </mat-form-field>
-            <button mat-icon-button (click)="allSelectedLinesStops();">
-                <mat-icon matPrefix svgIcon="select_all"></mat-icon>
-              </button>
-              <button mat-icon-button (click)="clearSelectedLinesStops();">
-                <mat-icon matPrefix svgIcon="close"></mat-icon>
-              </button>
-            <br><br>
+            <button mat-icon-button matTooltip="Tout selectionner" (click)="allSelectedLinesStops();">
+              <mat-icon matPrefix class="downScaledIco" svgIcon="select_all"></mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Tout déselectionner" (click)="clearSelectedLinesStops();">
+              <mat-icon matPrefix class="downScaledIco" svgIcon="close"></mat-icon>
+            </button>
+            <br>
+            <br>
           </span>
           <mat-radio-button class="example-radio-button" value="pers">
             Selectionner arrêt(s)
@@ -119,15 +120,15 @@
               </ng-container>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="resetSelectedStops()">
+          <button mat-icon-button class="downScaledIco" matTooltip="Tout déselectionner" (click)="resetSelectedStops()">
             <mat-icon svgIcon="close"></mat-icon>
           </button>
           <br>
         </span>
-        <mat-action-row>
+        <!--mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">Précédent</button>
           <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row>
+        </mat-action-row-->
       </mat-expansion-panel>
 
       <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
@@ -150,38 +151,38 @@
           </mat-form-field>
         </p>
         <p style="width:500px">
-          <mat-form-field style="width:80%">
+          <mat-form-field style="width:90%">
             <mat-select placeholder="Mois" [formControl]="moisFc" [(ngModel)]="selectedMonths" multiple>
               <mat-option *ngFor="let m of mois" [value]="m">{{m}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="allMonths();">
+          <!--button mat-icon-button class="downScaledIco"  matTooltip="Tout selectionner" (click)="allMonths();">
             <mat-icon matPrefix svgIcon="select_all"></mat-icon>
-          </button>
-          <button mat-icon-button (click)="clearMonths();">
+          </button-->
+          <button mat-icon-button class="downScaledIco"  matTooltip="Tout déselectionner" (click)="clearMonths();">
             <mat-icon matPrefix svgIcon="close"></mat-icon>
           </button>
         </p>
         <p style="width:500px">
-          <mat-form-field style="width:80%">
+          <mat-form-field style="width:90%">
             <mat-select placeholder="Jours de semaine" [formControl]="jourFc" [(ngModel)]="selectedDays" multiple>
               <mat-option *ngFor="let jour of jours" [value]="jour">{{jour}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button (click)="allDays()">
+          <!--button mat-icon-button class="downScaledIco"  matTooltip="Tout selectionner" (click)="allDays()">
             <mat-icon matPrefix svgIcon="select_all"></mat-icon>
-          </button>
-          <button mat-icon-button (click)="clearDays()">
+          </button-->
+          <button mat-icon-button class="downScaledIco"  matTooltip="Tout déselectionner" (click)="clearDays()">
             <mat-icon matPrefix svgIcon="close"></mat-icon>
           </button>
         </p>
 
 
 
-        <mat-action-row>
+        <!--mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">Précédent</button>
           <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row>
+        </mat-action-row-->
       </mat-expansion-panel>
 
 
@@ -223,20 +224,25 @@
               <mat-option value="1000">Lent</mat-option>
               <mat-option value="700">Moyen</mat-option>
               <mat-option value="400">Rapide</mat-option>
-              <mat-option value="100">Trés rapide</mat-option>
+              <mat-option value="100" [disabled]="navType==='jourHeure'">Trés rapide</mat-option>
             </mat-select>
           </mat-form-field>
         </p>
-        <mat-action-row>
-          <!--button mat-button color="warn" (click)="prevStep()">Précédent</button-->
-          
-        </mat-action-row>
+        <!--mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
+
+        </mat-action-row-->
       </mat-expansion-panel>
 
     </mat-accordion>
-    <p style="align-content: center">
-        <button mat-flat-button color="accent" (click)="nextStep();drawer.toggle();getData();">Visualiser les données</button>
-    </p>
-    
+    <br>
+    <div style="width: 30%; margin: 0 auto;">
+      <button mat-flat-button [disabled]="!isDataRetrievable()" matTooltip="Visualiser les données" color="accent" (click)="drawer.toggle();getData();">
+        <mat-icon matSuffix class="downScaledIco" svgIcon="recherche"></mat-icon>
+        Visualiser les données
+      </button>
+    </div>
+
+
   </mat-card-content>
 </mat-card>

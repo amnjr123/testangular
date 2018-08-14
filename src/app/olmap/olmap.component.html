@@ -13,8 +13,8 @@
     {{getLibSlider()}}
     
     <span class="example-fill-remaining-space"></span>
-    <form>
-      <!--mat-form-field style="width:500px;">
+    <!--form>
+      <mat-form-field style="width:500px;">
         <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
           <mat-option *ngFor="let ligne of listeLignes" [value]="ligne">
             {{ligne.getType()}} : {{ligne.getNomCommercial()}}, Sens : {{ligne.getSens()}}
@@ -22,30 +22,30 @@
         </mat-select>
       </mat-form-field>
       <button (click)="showSelectedLine()" mat-raised-button color="primary">Afficher</button>
-      <button (click)="hideSelectedLine()" mat-raised-button color="warn">Masquer</button-->
+      <button (click)="hideSelectedLine()" mat-raised-button color="warn">Masquer</button->
       <button (click)="showStopData()" mat-button> <mat-icon svgIcon="data"></mat-icon> Afficher les données</button>
-    </form>
+    </form-->
 
 
 
     <button mat-icon-button matTooltip="Afficher/Masquer les lignes" (click)="hideShowLines()">
       <mat-icon *ngIf="!linesVisible" style="color : lightgrey" svgIcon="timeline"></mat-icon>
-      <mat-icon *ngIf="linesVisible" style="color : darkblue" svgIcon="timeline"></mat-icon>
+      <mat-icon *ngIf="linesVisible" color="primary" svgIcon="timeline"></mat-icon>
     </button>
 
     <button mat-icon-button matTooltip="Afficher/Masquer les arrêts" (click)="hideShowStops()">
       <mat-icon *ngIf="!stopsVisible" style="color : lightgrey" svgIcon="stop"></mat-icon>
-      <mat-icon *ngIf="stopsVisible" style="color : darkblue" svgIcon="stop"></mat-icon>
+      <mat-icon *ngIf="stopsVisible" color="primary" svgIcon="stop"></mat-icon>
     </button>
 
     <!--button mat-icon-button (click)="showData=!showData;" disabled=true>
       <mat-icon style="color : lightgrey" svgIcon="data"></mat-icon>
-      <mat-icon *ngIf="dataVisible" style="color : darkblue" svgIcon="data"></mat-icon>
+      <mat-icon *ngIf="dataVisible" color="primary" svgIcon="data"></mat-icon>
     </button-->
 
     <button mat-icon-button matTooltip="Afficher/Masquer le fond de carte" (click)="hideShowMap()">
       <mat-icon *ngIf="!mapVisible" style="color : lightgrey" svgIcon="map"></mat-icon>
-      <mat-icon *ngIf="mapVisible" style="color : darkblue" svgIcon="map"></mat-icon>
+      <mat-icon *ngIf="mapVisible" color="primary" svgIcon="map"></mat-icon>
     </button>
 
     <button mat-icon-button matTooltip="Exporter en PDF" (click)="exportToPDF()">

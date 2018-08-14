@@ -145,6 +145,7 @@ export class DataConService {
               i=0;
             }
           }); 
+          if (jour.length>0 && jour.length<7){
           qry = qry +"} ) ON COLUMNS "
             +"FROM ( SELECT ( { ";
               jour.forEach(j=>{
@@ -156,6 +157,8 @@ export class DataConService {
                   i=0;
                 }    
               });
+            }
+            if (mois.length>0 && mois.length<12){
               qry = qry +"} ) ON COLUMNS "
                 +"FROM ( SELECT ( { ";
                   mois.forEach(m=>{
@@ -168,11 +171,15 @@ export class DataConService {
                     }
                     
                   });
+                }
                   qry = qry +"} ) ON COLUMNS "
                     +"FROM ( SELECT ( { "
-                      +"[Date].[Annee].[2017] "
+                      +"[Date].[Annee].["+annee+"] "
                       +"} ) ON COLUMNS "
-                      +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
+                      +"FROM [CubeSGI])";
+                      if (jour.length>0 && jour.length<7) qry=qry+")";
+                      if (mois.length>0 && mois.length<12) qry=qry+")";
+                      qry=qry+") CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
       
       +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
           //+"convert(varchar,[[Date]].[Mois]].[Mois]].[MEMBER_CAPTION]]]) as mois,"
@@ -221,6 +228,7 @@ export class DataConService {
               i=0;
             }
           }); 
+          if (jour.length>0 && jour.length<7){
           qry = qry +"} ) ON COLUMNS "
             +"FROM ( SELECT ( { ";
               jour.forEach(j=>{
@@ -232,6 +240,8 @@ export class DataConService {
                   i=0;
                 }    
               });
+            }
+            if (mois.length>0 && mois.length<12){
               qry = qry +"} ) ON COLUMNS "
                 +"FROM ( SELECT ( { ";
                   mois.forEach(m=>{
@@ -244,11 +254,15 @@ export class DataConService {
                     }
                     
                   });
+                }
                   qry = qry +"} ) ON COLUMNS "
                     +"FROM ( SELECT ( { "
-                      +"[Date].[Annee].[2017] "
+                      +"[Date].[Annee].["+annee+"] "
                       +"} ) ON COLUMNS "
-                      +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
+                      +"FROM [CubeSGI])";
+                      if (jour.length>0 && jour.length<7) qry=qry+")";
+                      if (mois.length>0 && mois.length<12) qry=qry+")";
+                      qry=qry+") CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
       
       +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
           +"convert(varchar,[[Date]].[Mois]].[Mois]].[MEMBER_CAPTION]]]) as mois,"
@@ -298,7 +312,8 @@ export class DataConService {
               qry = qry + "[Arret].[Nom Long].["+arr+"] ";
               i=0;
             }
-          }); 
+          });
+          if (jour.length>0 && jour.length<7){ 
           qry = qry +"} ) ON COLUMNS "
             +"FROM ( SELECT ( { ";
               jour.forEach(j=>{
@@ -310,6 +325,8 @@ export class DataConService {
                   i=0;
                 }    
               });
+            }
+            if (mois.length>0 && mois.length<12){
               qry = qry +"} ) ON COLUMNS "
                 +"FROM ( SELECT ( { ";
                   mois.forEach(m=>{
@@ -322,11 +339,15 @@ export class DataConService {
                     }
                     
                   });
+                }
                   qry = qry +"} ) ON COLUMNS "
                     +"FROM ( SELECT ( { "
-                      +"[Date].[Annee].[2017] "
+                      +"[Date].[Annee].["+annee+"] "
                       +"} ) ON COLUMNS "
-                      +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
+                      +"FROM [CubeSGI])";
+                      if (jour.length>0 && jour.length<7) qry=qry+")";
+                      if (mois.length>0 && mois.length<12) qry=qry+")";
+                      qry=qry+") CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
       
       +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
           +"convert(varchar,[[Plage Horaire]].[Heure]].[Heure]].[MEMBER_CAPTION]]]) as heure,"
@@ -378,7 +399,8 @@ export class DataConService {
               i=0;
             }
           }); 
-          qry = qry +"} ) ON COLUMNS "
+          if (jour.length>0 && jour.length<7){
+            qry = qry +"} ) ON COLUMNS "
             +"FROM ( SELECT ( { ";
               jour.forEach(j=>{
                 i++;
@@ -389,7 +411,9 @@ export class DataConService {
                   i=0;
                 }    
               });
-              qry = qry +"} ) ON COLUMNS "
+          }
+              if (mois.length>0 && mois.length<12){
+                qry = qry +"} ) ON COLUMNS "
                 +"FROM ( SELECT ( { ";
                   mois.forEach(m=>{
                     i++;
@@ -401,11 +425,15 @@ export class DataConService {
                     }
                     
                   });
+              }
                   qry = qry +"} ) ON COLUMNS "
                     +"FROM ( SELECT ( { "
-                      +"[Date].[Annee].[2017] "
+                      +"[Date].[Annee].["+annee+"] "
                       +"} ) ON COLUMNS "
-                      +"FROM [CubeSGI])))) CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
+                      +"FROM [CubeSGI])";
+                      if (jour.length>0 && jour.length<7) qry=qry+")";
+                      if (mois.length>0 && mois.length<12) qry=qry+")";
+                      qry=qry+") CELL PROPERTIES VALUE, BACK_COLOR, FORE_COLOR, FORMATTED_VALUE, FORMAT_STRING, FONT_NAME, FONT_SIZE, FONT_FLAGS')) "
       
       +"Select	convert(varchar,[[Date]].[Annee]].[Annee]].[MEMBER_CAPTION]]]) as annee,"
           +"convert(varchar,[[Plage Horaire]].[Heure]].[Heure]].[MEMBER_CAPTION]]]) as heure,"

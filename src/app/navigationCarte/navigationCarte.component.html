@@ -2,8 +2,7 @@
 
 <app-olmap [sliderValue]='sliderValue'></app-olmap>
 <mat-card class="example-card">
-  <mat-card-content>
-    <div id="navCarte">
+  <mat-card-content id="navCarte">
       <div id="buttons">
         <!--span>
           <mat-button-toggle-group #group="matButtonToggleGroup" (click)="setNavType(navType)" [value]="navType" [(ngModel)]="navType">
@@ -72,16 +71,13 @@
           <mat-slider step="1" tickInterval="1" [min]="minSliderValue" [max]="maxSliderValue" [value]="sliderValue"
             [(ngModel)]="sliderValue"></mat-slider>
         <br>
-        <div style="width: 100%; text-align: center">
 
-        </div>
         <!--table style="width: 100%; text-align: center">
           <tr>
             <td *ngFor="let m of mois">{{m}}</td>
           </tr>
         </table-->
 
-      </div>
 
     </div>
 

@@ -4,7 +4,7 @@
   <mat-toolbar color="primary">
     <mat-toolbar-row>
       <span>
-        <button mat-icon-button (click)="drawer.toggle();">
+        <button mat-icon-button matTooltip="Menu" (click)="drawer.toggle();">
           <mat-icon svgIcon="menu"></mat-icon>
         </button>
       </span>
@@ -17,7 +17,7 @@
           <mat-icon svgIcon="more_vert"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>
+          <button mat-menu-item disabled="true">
             <mat-icon svgIcon="refresh"></mat-icon>
             <span>Actualiser les données</span>
           </button>
@@ -40,18 +40,19 @@
     </mat-drawer>
 
     <div class="example-sidenav-content">
-      <mat-tab-group class="demo-tab-group">
+        <navigationCarte class="carte"></navigationCarte>
+      <!--mat-tab-group class="demo-tab-group">
         <mat-tab label="Carte">
           <div class="demo-tab-content">
-            <navigationCarte></navigationCarte>
-            <!--mat-card class="example-card">
+            
+            <mat-card class="example-card">
               <mat-card-content>
                 <div id="navCarte">
                     <navigationCarte [sliderValue]="sv"> </navigationCarte>
                 </div>
                 <div class="example-selected-value">Selected value: {{group.value}}</div>
               </mat-card-content>
-            </mat-card-->
+            </mat-card->
           </div>
         </mat-tab>
         <mat-tab label="Heat Map">
@@ -59,7 +60,7 @@
             <app-olheatmap></app-olheatmap>
           dwn
         </mat-tab>
-      </mat-tab-group>
+      </mat-tab-group-->
     </div>
   </mat-drawer-container>
 </div>

@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material';
 import { Ligne } from '../Model/ligne';
 import { Arret } from '../Model/arret';
 import { Observable } from 'rxjs/Observable';
+import { coordinate } from 'openlayers';
 
 
 @Component({
@@ -91,6 +92,13 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   navType: string;
 
   ponctualiteData;
+
+  projection = new ol.proj.Projection({
+     code: 'EPSG:3857',
+     extent: [55000, 5980000, 100000, 6020000],
+     units: 'm'
+   });
+
 
   mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
   jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
@@ -383,8 +391,10 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       target: target,
       layers: layers,
       view: new ol.View({
+        extent: this.projection.getExtent(),
         center: ol.proj.fromLonLat([0.68, 47.38]),
-        zoom: 12
+        zoom: 12,
+        
       })
     });
   }
@@ -674,9 +684,9 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       this.map.addInteraction(interaction);
     });
     this.visibleStops.forEach(arret => {
-      //arret.setDayHourDataHoveredStyle(jour,heure);
+      arret.setDayHourDataHoveredStyle(jour,heure);
       arret.setDayHourDataStyle(jour,heure);
-      //this.map.addInteraction(arret.getDataHoverInteraction());
+      this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
 

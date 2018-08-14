@@ -114,6 +114,14 @@ export class SidenavFiltersComponent implements OnInit {
     } else return false;
   }
 
+  isDataRetrievable():boolean{
+    if(this.selectedStops.length === 0 && this.selectedSelectedLinesStops.length === 0){
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   setStep(index: number) {
     this.step = index;
   }
@@ -135,9 +143,11 @@ export class SidenavFiltersComponent implements OnInit {
 
   resetSelectedBus(){
     this.selectedBusLines=[];
+    this.setSelectedLinesStops();
   }
   resetSelectedTram(){
     this.selectedTramLines=[];
+    this.setSelectedLinesStops();
   }
   resetSelectedStops(){
     this.selectedStops=[];
@@ -175,7 +185,8 @@ export class SidenavFiltersComponent implements OnInit {
         this.selectedLinesStops.push(stop);
       });
     });
-    console.log(this.selectedLinesStops);
+    //console.log(this.selectedLinesStops);
+    this.selectedSelectedLinesStops=this.selectedLinesStops;
   }
 
   syncStopData(){
