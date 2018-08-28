@@ -24,6 +24,14 @@ export class GestionLigneArret {
   private selectedLines:Array<Ligne>;
   private selectedStops:Array<Arret>;
 
+  fAnnee:string='';
+  fTypeNavigation:string='';
+  fJours:Array<string>= new Array<string>();
+  fMois:Array<string>=new Array<string>();
+
+  dataMin:number=1;
+  dataMax:number=2;
+
   fetchDataObs:Subject<any>=new Subject<any>();
   fetchMgtSpeedObs:Subject<any>=new Subject<any>();
 
@@ -55,6 +63,14 @@ export class GestionLigneArret {
 
   setSelectedStops(arrets:Array<Arret>){
     this.selectedStops=arrets;
+  }
+
+  getDataMin(){
+    return this.dataMin;
+  }
+
+  getDataMax(){
+    return this.dataMax;
   }
 
   getLignes() {
@@ -200,7 +216,10 @@ export class GestionLigneArret {
   //Recuperer les donnees
   fetchData(annee:string, arrets:Array<Arret>, typeNavigation:string, jours:Array<string>, mois:Array<string>){
     this.setFinishedLoading(false);
-
+    this.fAnnee=annee;
+    this.fTypeNavigation=typeNavigation;
+    this.fJours=jours;
+    this.fMois=mois;
     /*let numArrets=arrets.length;
     numArrets=350;
     let iterations = 1+((numArrets-(numArrets % 100))/100);
@@ -222,8 +241,23 @@ export class GestionLigneArret {
     if (typeNavigation==='jour'){
 
       this.dataService.callNodeServerFPANPJ(annee, nlArr,jours, mois).subscribe(data =>{
-        console.log(data);
+        //console.log(data);
+
+        let firstIteration:boolean=true;
+
         data.forEach(d => {
+          if (firstIteration){
+            this.dataMin=d['freq'];
+            this.dataMax=d['freq'];
+            firstIteration=false;
+          } else {
+            if(d['freq']<this.dataMin){
+              this.dataMin=d['freq'];
+            }
+            if(d['freq']>this.dataMax){
+              this.dataMax=d['freq'];
+            }
+          }
           this.findArretByNomLong(d['arret']).setDayData(d['jour'],d['freq']);
         });
           this.setFinishedLoading(true);
@@ -234,8 +268,23 @@ export class GestionLigneArret {
     } else if (typeNavigation==='mois'){
 
       this.dataService.callNodeServerFPANPM(annee, nlArr,jours, mois).subscribe(data =>{
-        console.log(data);
+        //console.log(data);
+
+        let firstIteration:boolean=true;
+
         data.forEach(d => {
+          if (firstIteration){
+            this.dataMin=d['freq'];
+            this.dataMax=d['freq'];
+            firstIteration=false;
+          } else {
+            if(d['freq']<this.dataMin){
+              this.dataMin=d['freq'];
+            }
+            if(d['freq']>this.dataMax){
+              this.dataMax=d['freq'];
+            }
+          }
           this.findArretByNomLong(d['arret']).setMonthData(d['mois'],d['freq']);
         });
           this.setFinishedLoading(true);
@@ -246,8 +295,23 @@ export class GestionLigneArret {
     } else if (typeNavigation==='heure'){
 
       this.dataService.callNodeServerFPANPH(annee, nlArr,jours, mois).subscribe(data =>{
-        console.log(data);
+        //console.log(data);
+
+        let firstIteration:boolean=true;
+
         data.forEach(d => {
+          if (firstIteration){
+            this.dataMin=d['freq'];
+            this.dataMax=d['freq'];
+            firstIteration=false;
+          } else {
+            if(d['freq']<this.dataMin){
+              this.dataMin=d['freq'];
+            }
+            if(d['freq']>this.dataMax){
+              this.dataMax=d['freq'];
+            }
+          }
           this.findArretByNomLong(d['arret']).setHourData(d['heure'],d['freq']);
         });
           this.setFinishedLoading(true);
@@ -258,11 +322,31 @@ export class GestionLigneArret {
     } else if (typeNavigation==='jourHeure'){
 
       this.dataService.callNodeServerFPANPDH(annee, nlArr,jours, mois).subscribe(data =>{
-        console.log(data);
+        //console.log(data);
+
+        let firstIteration:boolean=true;
+
         data.forEach(d => {
+          if (firstIteration){
+            this.dataMin=d['freq'];
+            this.dataMax=d['freq'];
+            firstIteration=false;
+          } else {
+            if(d['freq']<this.dataMin){
+              this.dataMin=d['freq'];
+            }
+            if(d['freq']>this.dataMax){
+              this.dataMax=d['freq'];
+            }
+          }
           this.findArretByNomLong(d['arret']).setDayHourData(d['jour'],d['heure'],d['freq']);
           //console.log(d['jour']+' '+d['heure']+' '+d['freq']);
         });
+        /*if (this.dataMin<(this.dataMax*0.05)){
+          this.dataMin=(this.dataMax*0.05)
+        }*/
+        //console.log('max : '+this.dataMax);
+        //console.log('min : '+this.dataMin);
           this.setFinishedLoading(true);
           this.arretsSetObs.next(true);
           this.arretsSetObs.next('jourHeure');

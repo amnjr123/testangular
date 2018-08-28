@@ -175,11 +175,11 @@ export class Arret {
   }
 */
 
-  getColor(value){
+  getColor(value,transparency){
     var hue=((1-value)*120).toString(10);
-    return ["hsl(",hue,",100%,40%,0.9)"].join("");
+    return ["hsl(",hue,",100%,40%,"+transparency+")"].join("");
   }
-
+/*
   setSizeDataMagneto(){
     //this.sizeData=data;
     let size = 0;
@@ -194,10 +194,10 @@ export class Arret {
         /*stroke: new ol.style.Stroke({
           color: '#FFFFFF',
           width: 0
-        }),*/
+        }),*-/
         radius: size*15,
         fill: new ol.style.Fill({
-          color: this.getColor(size)//'#06A1EF'
+          color: this.getColor(size,0.9)//'#06A1EF'
         })
       }),
       text: new ol.style.Text({
@@ -207,23 +207,51 @@ export class Arret {
     }));
 
   }
-
-  setMonthDataStyle(month:string){
+*/
+  setMonthDataStyle(month:string,min:number,max:number){
     //console.log(this.monthData);
         let size = 0;
+
+        if (this.monthData[month]){
+          size = (this.monthData[month]-min)/(max-min);
+        }
+    
+        let swapVal = 0.4
+    
+        size = (size*(1-swapVal))/swapVal
+        if (size>1){
+          size=1
+        }
+    
+        let transparence = size*3
+        if (transparence<0.5){
+          transparence=0.5
+        }
+        if (transparence>1){
+          transparence=1
+        }
+    
+        let radSize
+    
+        if (size*40>20){
+          radSize = 20;
+        } else {
+          radSize=size*40;
+        }
+        /*
         if (this.monthData[month]>=40000){
           size=1
         } else if(this.monthData[month]>=10000){
           size = ((0.5/30000)*this.monthData[month])+(1/3)
         } else {
           size = (this.monthData[month]*0.5)/10000;
-        }
+        }*/
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
-            radius: size*14,
+            radius: radSize,
             fill: new ol.style.Fill({
-              color: this.getColor(1-size)
+              color: this.getColor(1-size,transparence)
             })
           }),
           text: new ol.style.Text({
@@ -233,15 +261,28 @@ export class Arret {
         }));
   }
 
-  setMonthDataHoveredStyle(month:string){
+  setMonthDataHoveredStyle(month:string,min:number,max:number){
     let size = 0;
+
+    if (this.monthData[month]){
+      size = (this.monthData[month]-min)/(max-min);
+    }
+
+    let swapVal = 0.4
+
+    size = (size*(1-swapVal))/swapVal
+    if (size>1){
+      size=1
+    }
+
+    /*
     if (this.monthData[month]>=40000){
       size=1
     } else if(this.monthData[month]>=10000){
       size = ((0.5/30000)*this.monthData[month])+(1/3)
     } else {
       size = (this.monthData[month]*0.5)/10000;
-    }
+    }*/
 
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.monthData[month]+' Montées en '+month;
     let textLength = text.length;
@@ -253,9 +294,9 @@ export class Arret {
           color: '#FFFFFF',
           width: 3
         }),
-        radius: textLength*2.5,
+        radius: textLength*2.1,
         fill: new ol.style.Fill({
-          color: this.getColor(1-size)
+          color: this.getColor(1-size,0.7)
         })
       }),
       text: new ol.style.Text({
@@ -274,22 +315,50 @@ export class Arret {
     });
   }
 
-  setDayDataStyle(day:string){
+  setDayDataStyle(day:string,min:number,max:number){
     //console.log(this.monthData);
         let size = 0;
-        if (this.dayData[day]>=40000){
+
+        if (this.dayData[day]){
+          size = (this.dayData[day]-min)/(max-min);
+        }
+    
+        let swapVal = 0.4
+    
+        size = (size*(1-swapVal))/swapVal
+        if (size>1){
+          size=1
+        }
+    
+        let transparence = size*3
+        if (transparence<0.5){
+          transparence=0.5
+        }
+        if (transparence>1){
+          transparence=1
+        }
+    
+        let radSize
+    
+        if (size*40>20){
+          radSize = 20;
+        } else {
+          radSize=size*40;
+        }
+
+        /*if (this.dayData[day]>=40000){
           size=1
         } else if(this.dayData[day]>=10000){
           size = ((0.5/30000)*this.dayData[day])+(1/3)
         } else {
           size = (this.dayData[day]*0.5)/10000;
-        }
+        }*/
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
-            radius: size*14,
+            radius: radSize,
             fill: new ol.style.Fill({
-              color: this.getColor(1-size)
+              color: this.getColor(1-size,transparence)
             })
           }),
           text: new ol.style.Text({
@@ -299,17 +368,29 @@ export class Arret {
         }));
   }
 
-  setDayDataHoveredStyle(day:string){
+  setDayDataHoveredStyle(day:string,min:number,max:number){
     let size = 0;
+
+    if (this.dayData[day]){
+      size = (this.dayData[day]-min)/(max-min);
+    }
+
+    let swapVal = 0.4
+
+    size = (size*(1-swapVal))/swapVal
+    if (size>1){
+      size=1
+    }
+/*
     if (this.dayData[day]>=40000){
       size=1
     } else if(this.dayData[day]>=10000){
       size = ((0.5/30000)*this.dayData[day])+(1/3)
     } else {
       size = (this.dayData[day]*0.5)/10000;
-    }
+    }*/
 
-    let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.dayData[day]+' Montées en '+day;
+    let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.dayData[day]+' Montées les '+day+'s';
     let textLength = text.length;
 
 
@@ -319,9 +400,9 @@ export class Arret {
           color: '#FFFFFF',
           width: 3
         }),
-        radius: textLength*2.5,
+        radius: textLength*2.1,
         fill: new ol.style.Fill({
-          color: this.getColor(1-size)
+          color: this.getColor(1-size,0.7)
         })
       }),
       text: new ol.style.Text({
@@ -341,22 +422,51 @@ export class Arret {
   }
 
 
-  setHourDataStyle(hour:string){
+  setHourDataStyle(hour:string,min:number,max:number){
     //console.log(this.monthData);
-        let size = 0;
-        if (this.hourData[hour]>=40000){
+    let size = 0;
+
+    if (this.hourData[hour]){
+      size = (this.hourData[hour]-min)/(max-min);
+    }
+
+    let swapVal = 0.4
+
+    size = (size*(1-swapVal))/swapVal
+    if (size>1){
+      size=1
+    }
+
+    let transparence = size*3
+    if (transparence<0.5){
+      transparence=0.5
+    }
+    if (transparence>1){
+      transparence=1
+    }
+
+    let radSize
+
+    if (size*40>20){
+      radSize = 20;
+    } else {
+      radSize=size*40;
+    }
+
+        
+        /*if (this.hourData[hour]>=40000){
           size=1
         } else if(this.hourData[hour]>=10000){
           size = ((0.5/30000)*this.hourData[hour])+(1/3)
         } else {
           size = (this.hourData[hour]*0.5)/10000;
-        }
+        }*/
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
-            radius: size*14,
+            radius: radSize,
             fill: new ol.style.Fill({
-              color: this.getColor(1-size)
+              color: this.getColor(1-size,transparence)
             })
           }),
           text: new ol.style.Text({
@@ -366,15 +476,27 @@ export class Arret {
         }));
   }
 
-  setHourDataHoveredStyle(hour:string){
+  setHourDataHoveredStyle(hour:string,min:number,max:number){
     let size = 0;
-    if (this.hourData[hour]>=40000){
+
+    if (this.hourData[hour]){
+      size = (this.hourData[hour]-min)/(max-min);
+    }
+
+    let swapVal = 0.4
+
+    size = (size*(1-swapVal))/swapVal
+    if (size>1){
+      size=1
+    }
+
+    /*if (this.hourData[hour]>=40000){
       size=1
     } else if(this.hourData[hour]>=10000){
       size = ((0.5/30000)*this.hourData[hour])+(1/3)
     } else {
       size = (this.hourData[hour]*0.5)/10000;
-    }
+    }*/
 
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.hourData[hour]+' Montées à '+hour+'h';
     let textLength = text.length;
@@ -386,9 +508,9 @@ export class Arret {
           color: '#FFFFFF',
           width: 3
         }),
-        radius: textLength*2.5,
+        radius: textLength*2.1,
         fill: new ol.style.Fill({
-          color: this.getColor(1-size)
+          color: this.getColor(1-size,0.7)
         })
       }),
       text: new ol.style.Text({
@@ -408,20 +530,45 @@ export class Arret {
   }
 
 
-  setDayHourDataStyle(day:string,hour:string){
+  setDayHourDataStyle(day:string,hour:string,min:number,max:number){
         let size = 0;
         //console.log(this.dayHourData[day+'_'+hour]);
-        if (this.dayHourData[day+'_'+hour]>=4000){
-          size=1
-        } else {
-          size = this.dayHourData[day+'_'+hour]/4000;
+
+
+        if (this.dayHourData[day+'_'+hour]){
+          size = (this.dayHourData[day+'_'+hour]-min)/(max-min);
         }
+
+        let swapVal = 0.3
+
+        size = (size*(1-swapVal))/swapVal
+        if (size>1){
+          size=1
+        }
+
+        let transparence = size*3
+        if (transparence<0.5){
+          transparence=0.5
+        }
+        if (transparence>1){
+          transparence=1
+        }
+
+        let radSize
+
+        if (size*40>20){
+          radSize = 20;
+        } else {
+          radSize=size*40;
+        }
+
+        
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
-            radius: size*14,
+            radius: radSize,
             fill: new ol.style.Fill({
-              color: this.getColor(1-size)
+              color: this.getColor(1-size,transparence)
             })
           }),
           text: new ol.style.Text({
@@ -431,14 +578,26 @@ export class Arret {
         }));
   }
 
-  setDayHourDataHoveredStyle(day:string,hour:string){
+  setDayHourDataHoveredStyle(day:string,hour:string,min:number,max:number){
     let size = 0;
+
+    if (this.dayHourData[day+'_'+hour]){
+      size = (this.dayHourData[day+'_'+hour]-min)/(max-min);
+    }
+
+    let swapVal = 0.3
+
+    size = (size*(1-swapVal))/swapVal
+    if (size>1){
+      size=1
+    }
+/*
     if (this.dayHourData[day+'_'+hour]>=4000){
       size=1
     } else {
       size = this.dayHourData[day+'_'+hour]/4000;
     }
-
+*/
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.dayHourData[day+'_'+hour]+' Montées,\nles '+day+'s à '+hour+'h';
     let textLength = text.length;
 
@@ -449,9 +608,9 @@ export class Arret {
           color: '#FFFFFF',
           width: 3
         }),
-        radius: textLength*2.5,
+        radius: textLength*1.8,
         fill: new ol.style.Fill({
-          color: this.getColor(1-size)
+          color: this.getColor(1-size,0.7)
         })
       }),
       text: new ol.style.Text({
@@ -519,7 +678,7 @@ export class Arret {
         }),
         radius: textLength*2,
         fill: new ol.style.Fill({
-          color: this.getColor(size)
+          color: this.getColor(size,0.9)
         })
       }),
       text: new ol.style.Text({

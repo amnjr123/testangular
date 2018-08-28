@@ -11,8 +11,28 @@
   <mat-toolbar>
 
     {{getLibSlider()}}
-    
+
     <span class="example-fill-remaining-space"></span>
+
+    <span *ngIf="!(gestionLigneArret.fAnnee==='')" style="font-size: 8pt; font-style: italic">
+      (Année : {{gestionLigneArret.fAnnee}}
+      <span *ngIf='!(gestionLigneArret.fJours.length===0)'>
+        - Jours :
+        <span *ngFor='let j of gestionLigneArret.fJours'>
+          {{j}},
+        </span>
+      </span>
+      <span *ngIf='!(gestionLigneArret.fMois.length===0)'>
+        - Mois :
+        <span *ngFor='let m of gestionLigneArret.fMois'>
+          {{m}},
+        </span>
+      </span>
+
+        - Pas par : {{gestionLigneArret.fTypeNavigation}}
+
+      )
+    </span>
     <!--form>
       <mat-form-field style="width:500px;">
         <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
@@ -48,8 +68,8 @@
       <mat-icon *ngIf="mapVisible" color="primary" svgIcon="map"></mat-icon>
     </button>
 
-    <button mat-icon-button matTooltip="Exporter en PDF" (click)="exportToPDF()">
-      <mat-icon svgIcon="pdf"></mat-icon>
+    <button mat-icon-button matTooltip="Télécharger une capture de la carte" (click)="exportToPNG()">
+      <mat-icon svgIcon="camera"></mat-icon>
     </button>
 
   </mat-toolbar>

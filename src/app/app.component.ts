@@ -17,12 +17,6 @@ export class AppComponent implements OnInit {
 
   }
 
-  sliderValueChanged(newValue: number) {
-    //this.sv=newValue;
-    console.log("new value = " + newValue);
-  }
-
-
   ngAfterViewInit() {
     
   }

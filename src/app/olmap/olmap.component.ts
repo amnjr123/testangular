@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit, Injectable, Input, SimpleChanges } from '@angular/core';
 
 import * as ol from 'openlayers';
-import * as jsPDF from 'jspdf';
+import * as fs from 'file-saver';
+
 
 import { DataConService } from '../services/data-con.service';
 import { GestionLigneArret } from '../Model/gestion-ligne-arret.service';
@@ -43,7 +44,8 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-        'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+        'World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      crossOrigin: 'anonymous'
     })
   })];
   private stamenWaterColor = [new ol.layer.Tile({
@@ -393,6 +395,7 @@ export class OlmapComponent implements OnInit, AfterViewInit {
       view: new ol.View({
         extent: this.projection.getExtent(),
         center: ol.proj.fromLonLat([0.68, 47.38]),
+        minZoom: 10,
         zoom: 12,
         
       })
@@ -559,11 +562,11 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   showStopData() {
     this.sliderValue = 0;
     this.gestionLigneArret.setFinishedLoading(false);
-    console.log(this.genStringArrets());
+    //console.log(this.genStringArrets());
     this.dataService.getRetardArret(this.genStringArrets())
       .subscribe(data => {
         this.ponctualiteData = data;
-        console.log(this.ponctualiteData);
+        //console.log(this.ponctualiteData);
         this.magnetoFwdMonth(this.mois[this.sliderValue]);
         this.gestionLigneArret.setFinishedLoading(true);
       }, err => {
@@ -626,6 +629,25 @@ export class OlmapComponent implements OnInit, AfterViewInit {
   //}
 
   magnetoFwdMonth(mois: string) {
+
+    /*let isDefaultInteraction:boolean=false;
+
+    this.map.getInteractions().forEach(interaction => {
+
+      isDefaultInteraction=false;
+
+      for(let i=0 ; i<ol.interaction.defaults().getLength(); i++){
+        if (interaction===ol.interaction.defaults().item(i)){
+          isDefaultInteraction=true;
+        }
+      }
+
+      if (!isDefaultInteraction){
+        this.map.removeInteraction(interaction);
+      }
+
+    });*/
+    /*
     this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
@@ -642,35 +664,41 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     });*/
 
     this.visibleStops.forEach(arret => {
+      this.map.removeInteraction(arret.getDataHoverInteraction());
+      this.map.removeInteraction(arret.getHoverInteraction());
       //arret.setSizeDataMagneto();
       //arret.initDataHoveredStyle();
-      arret.setMonthDataHoveredStyle(mois);
-      arret.setMonthDataStyle(mois);
+      arret.setMonthDataHoveredStyle(mois,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
+      arret.setMonthDataStyle(mois,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
       //console.log(arret.getMonthData());
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
 
   magnetoFwdDay(jour: string) {
-    this.map.getInteractions().clear();
+    /*this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
-    });
+    });*/
     this.visibleStops.forEach(arret => {
-      arret.setDayDataHoveredStyle(jour);
-      arret.setDayDataStyle(jour);
+      this.map.removeInteraction(arret.getDataHoverInteraction());
+      this.map.removeInteraction(arret.getHoverInteraction());
+      arret.setDayDataHoveredStyle(jour,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
+      arret.setDayDataStyle(jour,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
 
   magnetoFwdHour(heure: string) {
-    this.map.getInteractions().clear();
+    /*this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
-    });
+    });*/
     this.visibleStops.forEach(arret => {
-      arret.setHourDataHoveredStyle(heure);
-      arret.setHourDataStyle(heure);
+      this.map.removeInteraction(arret.getDataHoverInteraction());
+      this.map.removeInteraction(arret.getHoverInteraction());
+      arret.setHourDataHoveredStyle(heure,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
+      arret.setHourDataStyle(heure,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
@@ -679,13 +707,15 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     var param = jh.split('_',2);
     var jour = param[0];
     var heure = param[1];
-    this.map.getInteractions().clear();
+    /*this.map.getInteractions().clear();
     ol.interaction.defaults().forEach(interaction => {
       this.map.addInteraction(interaction);
-    });
+    });*/
     this.visibleStops.forEach(arret => {
-      arret.setDayHourDataHoveredStyle(jour,heure);
-      arret.setDayHourDataStyle(jour,heure);
+      this.map.removeInteraction(arret.getDataHoverInteraction());
+      this.map.removeInteraction(arret.getHoverInteraction());
+      arret.setDayHourDataHoveredStyle(jour,heure,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
+      arret.setDayHourDataStyle(jour,heure,this.gestionLigneArret.getDataMin(),this.gestionLigneArret.getDataMax());
       this.map.addInteraction(arret.getDataHoverInteraction());
     });
   }
@@ -747,60 +777,22 @@ export class OlmapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  
 
-  exportToPDF() {
-
-    var loading = 0;
-    var loaded = 0;
-
-    document.body.style.cursor = 'progress';
-
-    var format = 'a4';
-    var resolution = 72;
-    var dim = [297, 210];
-    var width = Math.round(dim[0] * resolution / 25.4);
-    var height = Math.round(dim[1] * resolution / 25.4);
-    var size = /** @type {ol.Size} */ (this.map.getSize());
-    var extent = this.map.getView().calculateExtent(size);
-
-    var source = this.osmWorldMapLayers[0].getSource();
-
-    var tileLoadStart = function () {
-      ++loading;
-    };
-
-    var tileLoadEnd = function () {
-      ++loaded;
-      if (loading === loaded) {
-        var canvas = this;
-        window.setTimeout(function () {
-          loading = 0;
-          loaded = 0;
-          var data = canvas.toDataURL('image/png');
-          var pdf = new jsPDF('landscape', undefined, format);
-          pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
-          pdf.save('map.pdf');
-          source.un('tileloadstart', tileLoadStart);
-          source.un('tileloadend', tileLoadEnd, canvas);
-          source.un('tileloaderror', tileLoadEnd, canvas);
-          this.map.setSize(size);
-          this.map.getView().fit(extent);
-          this.map.renderSync();
-          document.body.style.cursor = 'auto';
-        }, 100);
+  exportToPNG(){
+    this.map.once('postcompose', function(event:ol.render.Event) {
+      var canvas = event.context.canvas;
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
+      } else {
+        canvas.toBlob(function(blob) {
+          fs.saveAs(blob, 'map.png');
+        });
       }
-    };
-
-    this.map.once('postcompose', function (event) {
-      source.on('tileloadstart', tileLoadStart);
-      //source.on('tileloadend', tileLoadEnd, event.context.canvas);
-      //source.on('tileloaderror', tileLoadEnd, event.context.canvas);
     });
-
-    this.map.setSize([width, height]);
-    this.map.getView().fit(extent);
     this.map.renderSync();
   }
+
 
   /*
     getSelectedLineStyle(lineId) {

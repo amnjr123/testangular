@@ -188,7 +188,7 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    console.log(qry);
+    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
@@ -271,7 +271,7 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    console.log(qry);
+    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
@@ -356,7 +356,7 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    console.log(qry);
+    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
@@ -442,7 +442,7 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    console.log(qry);
+    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
