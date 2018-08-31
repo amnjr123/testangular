@@ -1,0 +1,11 @@
+{
+"userName": "sa",
+"password": "SGITEST",
+"server": "localhost",
+"options": {
+    "instanceName": "MSSQLSERVER16",
+    "database": "SGI_DW",
+    "encrypt": true,
+    "rowCollectionOnRequestCompletion": true
+}
+}

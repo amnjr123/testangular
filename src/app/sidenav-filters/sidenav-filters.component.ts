@@ -86,17 +86,12 @@ export class SidenavFiltersComponent implements OnInit {
     
           } else if (this.arretsSelectionType==="selectedLines"){
             //Lignes perso, arrets des lignes
-            //this.selectedStops=this.selectedSelectedLinesStops;
             this.gestionLigneArret.setSelectedStops(this.selectedSelectedLinesStops);
             this.gestionLigneArret.setSelectedLines([ ...this.selectedBusLines, ...this.selectedTramLines]);
             this.gestionLigneArret.fetchDataObs.next("persLinesSelectedLinesStops");
 
             this.syncStopData();
-            /*
-            this.selectedSelectedLinesStops.forEach(element => {
-              console.log(element.getMonthData());
-            });*/
-    
+
           }
         }
       }
@@ -185,7 +180,6 @@ export class SidenavFiltersComponent implements OnInit {
         this.selectedLinesStops.push(stop);
       });
     });
-    //console.log(this.selectedLinesStops);
     this.selectedSelectedLinesStops=this.selectedLinesStops;
   }
 
@@ -200,10 +194,6 @@ export class SidenavFiltersComponent implements OnInit {
   }
 
   getData(){
-
-    //console.log(this.gestionLigneArret.getSelectedLines());
-    //console.log(this.gestionLigneArret.getSelectedStops()); 
-
 
     if (!this.allLines){
       if (this.arretsSelectionType==="selectedLines"){

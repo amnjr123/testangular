@@ -87,13 +87,13 @@ export class Ligne {
 
     if (this.type.toLowerCase() === 'bus') {
       color = '#0DB2A6';
-      width = 5;
+      width = 2;
     } else if (this.type.toLowerCase() === 'tram') {
       color = '#CF1111';
-      width = 7;
+      width = 3;
     } else {
       color = '#000000';
-      width = 2;
+      width = 1;
     }
 
     this.style = new ol.style.Style({

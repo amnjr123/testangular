@@ -15,7 +15,6 @@ export class GestionLigneArret {
   private annees:Array<string>;
   private lignes: Array<Ligne>;
   private arrets: Array<Arret>;
-  private donneesArretsTemp;
   private donneesLignes = [null];
   private donneesArrets = [null];
   private geoServerHost: String = '10.205.8.226:4601';
@@ -37,6 +36,8 @@ export class GestionLigneArret {
 
   arretsSetObs:Subject<any>=new Subject<any>();
 
+  intObs:Subject<any>= new Subject<any>();
+
 
   constructor(private dataService: DataConService) {
     this.annees = new Array<string>();
@@ -47,6 +48,10 @@ export class GestionLigneArret {
     this.fetchYears();
     this.fetchLignesData();
     this.fetchStopData();
+  }
+
+  getIntObs(){
+    return this.intObs;
   }
 
   getSelectedLines(){
@@ -192,10 +197,8 @@ export class GestionLigneArret {
   }
 
   fillLineStops(line: Ligne) {
-    this.donneesArretsTemp = [null];
     this.dataService.getStopLineRecords(line)
       .subscribe(data => {
-        //this.donneesArretsTemp = data;
         data['features'].forEach(arret => {
           let a = new Arret(arret['properties']['arret_id'],arret['properties']['Arret_NomLong'], arret['properties']['Arret_NomCommercial'], arret['properties']['Lat'], arret['properties']['Long']);
           line.addArret(a);
@@ -220,11 +223,7 @@ export class GestionLigneArret {
     this.fTypeNavigation=typeNavigation;
     this.fJours=jours;
     this.fMois=mois;
-    /*let numArrets=arrets.length;
-    numArrets=350;
-    let iterations = 1+((numArrets-(numArrets % 100))/100);
-    let lastIteration = iterations;
-*/
+
     let nlArr:Array<string>=new Array<string>();
     arrets.forEach(a=>{
       nlArr.push(a.getNomLong());
@@ -241,7 +240,6 @@ export class GestionLigneArret {
     if (typeNavigation==='jour'){
 
       this.dataService.callNodeServerFPANPJ(annee, nlArr,jours, mois).subscribe(data =>{
-        //console.log(data);
 
         let firstIteration:boolean=true;
 
@@ -268,7 +266,6 @@ export class GestionLigneArret {
     } else if (typeNavigation==='mois'){
 
       this.dataService.callNodeServerFPANPM(annee, nlArr,jours, mois).subscribe(data =>{
-        //console.log(data);
 
         let firstIteration:boolean=true;
 
@@ -295,7 +292,6 @@ export class GestionLigneArret {
     } else if (typeNavigation==='heure'){
 
       this.dataService.callNodeServerFPANPH(annee, nlArr,jours, mois).subscribe(data =>{
-        //console.log(data);
 
         let firstIteration:boolean=true;
 
@@ -322,7 +318,6 @@ export class GestionLigneArret {
     } else if (typeNavigation==='jourHeure'){
 
       this.dataService.callNodeServerFPANPDH(annee, nlArr,jours, mois).subscribe(data =>{
-        //console.log(data);
 
         let firstIteration:boolean=true;
 
@@ -340,13 +335,7 @@ export class GestionLigneArret {
             }
           }
           this.findArretByNomLong(d['arret']).setDayHourData(d['jour'],d['heure'],d['freq']);
-          //console.log(d['jour']+' '+d['heure']+' '+d['freq']);
         });
-        /*if (this.dataMin<(this.dataMax*0.05)){
-          this.dataMin=(this.dataMax*0.05)
-        }*/
-        //console.log('max : '+this.dataMax);
-        //console.log('min : '+this.dataMin);
           this.setFinishedLoading(true);
           this.arretsSetObs.next(true);
           this.arretsSetObs.next('jourHeure');

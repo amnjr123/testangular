@@ -63,11 +63,6 @@ export class NavigationCarte implements OnInit {
     });
   }
 
-  //Emits a notification when the slider value is changed
-  //sliderValueChangeEvent() {
-  //this.onSliderValueChange.emit(this.sliderValue);
-  //}
-
   //Format the slider label
   formatLabel(value: number | null) {
     if (!value) {
@@ -155,7 +150,6 @@ export class NavigationCarte implements OnInit {
       this.rewinding = false;
       this.timerSub.unsubscribe();
     }
-    //this.sliderValueChangeEvent;
   }
 
   //Pause button on click event
@@ -163,26 +157,5 @@ export class NavigationCarte implements OnInit {
     this.playing = false;
     this.rewinding = false;
   }
-/*
-  getLibSlider() {
-    if (this.navType === 'mois') {
-      return this.mois[this.sliderValue]
-    }
-    if (this.navType === 'jour') {
-      return this.jours[this.sliderValue];
-    }
-    if (this.navType === 'heure') {
-      return this.sliderValue + 'h';
-    }
-    if (this.navType === 'jourHeure') {
-      if(this.sliderValue>-1){
-        var param = this.jh[this.sliderValue].split('_',2);
-        //console.log(this.jh);
-        var jour = param[0];
-        var heure = param[1];
-        return jour+' à '+heure+'h';
-      } else return '';
-    }
-  }*/
 
 }

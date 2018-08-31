@@ -5,11 +5,16 @@ import { Http, Response } from "@angular/http";
 import { Arret } from '../Model/arret';
 import { Ligne } from '../Model/ligne';
 import { GestionLigneArret } from '../Model/gestion-ligne-arret.service';
+import { Config } from '../../assets/config';
 
 @Injectable()
+
 export class DataConService {
-  geoServerHost: String = '10.205.8.226:4601';
-  nodeServerHost:string = 'http://10.205.8.226:4605/sqlqry';
+
+  config = new Config();
+
+  geoServerHost: String = this.config.getGeoServerHost();//  '10.205.8.226:4601';
+  nodeServerHost:string = this.config.getNodeServerHost();//'http://10.205.8.226:4605/sqlqry';
   data: any;
   allStopLineData: any;
 
@@ -25,25 +30,12 @@ export class DataConService {
     return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:annees&maxFeatures=50&outputFormat=application%2Fjson';
   }
 
-
   genStopDataUrl() {
     return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:Geo_Arrets_Data&maxFeatures=5000&outputFormat=application%2Fjson';
   }
 
   genStopLineDataUrl(lineId: String, lineDbSensId: number) {
     return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:arretsParLigne&maxFeatures=50&outputFormat=application%2Fjson&viewParams=ligne_id:' + lineId + ';sens_id=' + lineDbSensId;
-  }
-
-  genRetardArretURL(arrets: string) {
-    return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:Ponctualite_Arret_AnneeMois&maxFeatures=10000&outputFormat=application%2Fjson&viewParams=Arret_id:' + arrets;
-  }
-
-  genRetardLigneArretURL(ligne: string, annee: string) {
-    return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:StopDataByLDMY&maxFeatures=10000&outputFormat=application%2Fjson&viewParams=ligne:[' + ligne + '];annee:[' + annee + '];jour:[Lundi];arret:ALLMEMBERS;mois:[Janvier]';
-  }
-
-  genFreqArretURL(annee:string, arret:string,jour:string, mois:string) {
-    return 'http://' + this.geoServerHost + '/geoserver/osm/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=osm:freqArret&maxFeatures=10000&outputFormat=application%2Fjson&viewParams=arret:['+arret+'];annee:['+annee+'];jour:['+jour+'];mois:['+mois+']';
   }
 
   getLineRecords() {
@@ -70,37 +62,6 @@ export class DataConService {
   getStopLineRecords(line: Ligne) {
     
     return this.http.get(this.genStopLineDataUrl(line.getdbId(), line.getSens())).map((data: any) => {
-      return data;
-    }, err => {
-      if (err) {
-        return err.json();
-      }
-    });
-  }
-
-  getRetardArret(arrets: string) {
-    return this.http.get(this.genRetardArretURL(arrets)).map((data: any) => {
-      return data;
-    }, err => {
-      if (err) {
-        return err.json();
-      }
-    });
-  }
-/*
-  getRetardLigneArret(ligne: string, annee: string) {
-    
-    return this.http.get(this.genRetardLigneArretURL(ligne, annee)).map((data: any) => {
-      return data;
-    }, err => {
-      if (err) {
-        return err.json();
-      }
-    });
-  }*/
-
-  getFreqArret(annee:string, arret:string,jour:string, mois:string){
-    return this.http.get(this.genFreqArretURL(annee,arret,jour,mois)).map((data: any) => {
       return data;
     }, err => {
       if (err) {
@@ -188,8 +149,6 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    //console.log(qry);
-
     let req = { q : qry};
     const headers = new HttpHeaders()
           .set('Authorization', 'my-auth-token')
@@ -270,8 +229,6 @@ export class DataConService {
           //+"convert(varchar,[[Date]].[Jour de la Semaine]].[Jour de la Semaine]].[MEMBER_CAPTION]]]) as jour,"
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
-
-    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
@@ -355,8 +312,6 @@ export class DataConService {
           //+"convert(varchar,[[Date]].[Jour de la Semaine]].[Jour de la Semaine]].[MEMBER_CAPTION]]]) as jour,"
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
-
-    //console.log(qry);
 
     let req = { q : qry};
     const headers = new HttpHeaders()
@@ -442,8 +397,6 @@ export class DataConService {
           +"convert(varchar,[[Arret]].[Nom Long]].[Nom Long]].[MEMBER_CAPTION]]]) as arret,"
           +"convert(int,[[Measures]].[Frequentation]]]) as freq from t";
 
-    //console.log(qry);
-
     let req = { q : qry};
     const headers = new HttpHeaders()
           .set('Authorization', 'my-auth-token')
@@ -452,27 +405,8 @@ export class DataConService {
     return this.http.post(this.nodeServerHost, req, {
       headers: headers
     }).map((data:any) => {
-      //console.log(data);
       return data
     });
   }
-
-
-
-  /*
-  getAllStopLines() {
-    let promise = new Promise((resolve, reject) => {
-      let url = this.genAllStopLineDataUrl('%%','%%');
-      this.http.get(url)
-      .toPromise()
-      .then(
-        res => {
-          this.allStopLineData=res;
-          resolve();
-        }
-      );
-    });
-    return promise;
-  }*/
 
 }

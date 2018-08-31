@@ -33,19 +33,6 @@
 
       )
     </span>
-    <!--form>
-      <mat-form-field style="width:500px;">
-        <mat-select placeholder="Ligne" [(ngModel)]="selectedLine" name="ligne">
-          <mat-option *ngFor="let ligne of listeLignes" [value]="ligne">
-            {{ligne.getType()}} : {{ligne.getNomCommercial()}}, Sens : {{ligne.getSens()}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button (click)="showSelectedLine()" mat-raised-button color="primary">Afficher</button>
-      <button (click)="hideSelectedLine()" mat-raised-button color="warn">Masquer</button->
-      <button (click)="showStopData()" mat-button> <mat-icon svgIcon="data"></mat-icon> Afficher les données</button>
-    </form-->
-
 
 
     <button mat-icon-button matTooltip="Afficher/Masquer les lignes" (click)="hideShowLines()">
@@ -58,11 +45,6 @@
       <mat-icon *ngIf="stopsVisible" color="primary" svgIcon="stop"></mat-icon>
     </button>
 
-    <!--button mat-icon-button (click)="showData=!showData;" disabled=true>
-      <mat-icon style="color : lightgrey" svgIcon="data"></mat-icon>
-      <mat-icon *ngIf="dataVisible" color="primary" svgIcon="data"></mat-icon>
-    </button-->
-
     <button mat-icon-button matTooltip="Afficher/Masquer le fond de carte" (click)="hideShowMap()">
       <mat-icon *ngIf="!mapVisible" style="color : lightgrey" svgIcon="map"></mat-icon>
       <mat-icon *ngIf="mapVisible" color="primary" svgIcon="map"></mat-icon>
@@ -74,6 +56,9 @@
 
   </mat-toolbar>
   <mat-progress-bar mode="indeterminate" *ngIf="!gestionLigneArret.isLoading()" style="z-index:1; position: absolute;"></mat-progress-bar>
+  <span style="z-index:1; position: absolute; text-align: center; color: white; width: 100%; height: 50px; background-color: rgba(0, 170, 5, 0.3)">
+    {{stopHoveredData}}
+  </span>
 
   <div id="map" class="map"></div>
 </div>

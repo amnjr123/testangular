@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -12,18 +13,12 @@ app.all("/*", function (req, res, next) {
     next();
 });
 
+
+
+
+
 var Connection = require('tedious').Connection;
-var config = {
-    userName: 'sa',
-    password: 'SGITEST',
-    server: "localhost",
-    options: {
-        instanceName: 'MSSQLSERVER16',
-        database: 'SGI_DW',
-        encrypt: true,
-        rowCollectionOnRequestCompletion: true
-    }
-};
+var config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;

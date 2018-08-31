@@ -1,5 +1,4 @@
 <mat-card>
-  <!-- [style.backgroundColor]="'lightGray'" -->
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title>
@@ -57,10 +56,6 @@
             <mat-icon class="downScaledIco" svgIcon="close"></mat-icon>
           </button>
         </span>
-
-        <!--mat-action-row>
-          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row-->
       </mat-expansion-panel>
 
       <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
@@ -125,10 +120,6 @@
           </button>
           <br>
         </span>
-        <!--mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
-          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row-->
       </mat-expansion-panel>
 
       <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
@@ -156,9 +147,6 @@
               <mat-option *ngFor="let m of mois" [value]="m">{{m}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <!--button mat-icon-button class="downScaledIco"  matTooltip="Tout selectionner" (click)="allMonths();">
-            <mat-icon matPrefix svgIcon="select_all"></mat-icon>
-          </button-->
           <button mat-icon-button class="downScaledIco"  matTooltip="Tout déselectionner" (click)="clearMonths();">
             <mat-icon matPrefix svgIcon="close"></mat-icon>
           </button>
@@ -169,20 +157,10 @@
               <mat-option *ngFor="let jour of jours" [value]="jour">{{jour}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <!--button mat-icon-button class="downScaledIco"  matTooltip="Tout selectionner" (click)="allDays()">
-            <mat-icon matPrefix svgIcon="select_all"></mat-icon>
-          </button-->
           <button mat-icon-button class="downScaledIco"  matTooltip="Tout déselectionner" (click)="clearDays()">
             <mat-icon matPrefix svgIcon="close"></mat-icon>
           </button>
         </p>
-
-
-
-        <!--mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
-          <button mat-button color="primary" (click)="nextStep()">Suivant</button>
-        </mat-action-row-->
       </mat-expansion-panel>
 
 
@@ -228,10 +206,6 @@
             </mat-select>
           </mat-form-field>
         </p>
-        <!--mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">Précédent</button>
-
-        </mat-action-row-->
       </mat-expansion-panel>
 
     </mat-accordion>

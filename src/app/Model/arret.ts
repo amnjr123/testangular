@@ -1,5 +1,5 @@
-
 import * as ol from 'openlayers';
+import { Subject } from 'rxjs/Subject';
 
 export class Arret {
 
@@ -17,7 +17,6 @@ export class Arret {
   dayData={'Lundi':0,'Mardi':0,'Mercredi':0,'Jeudi':0,'Vendredi':0,'Samedi':0,'Dimanche':0};
   hourData={0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0,21:0,22:0,23:0};  
   dayHourData={'Lundi_0':0,'Lundi_1':0,'Lundi_2':0,'Lundi_3':0,'Lundi_4':0,'Lundi_5':0,'Lundi_6':0,'Lundi_7':0,'Lundi_8':0,'Lundi_9':0,'Lundi_10':0,'Lundi_11':0,'Lundi_12':0,'Lundi_13':0,'Lundi_14':0,'Lundi_15':0,'Lundi_16':0,'Lundi_17':0,'Lundi_18':0,'Lundi_19':0,'Lundi_20':0,'Lundi_21':0,'Lundi_22':0,'Lundi_23':0,'Mardi_0':0,'Mardi_1':0,'Mardi_2':0,'Mardi_3':0,'Mardi_4':0,'Mardi_5':0,'Mardi_6':0,'Mardi_7':0,'Mardi_8':0,'Mardi_9':0,'Mardi_10':0,'Mardi_11':0,'Mardi_12':0,'Mardi_13':0,'Mardi_14':0,'Mardi_15':0,'Mardi_16':0,'Mardi_17':0,'Mardi_18':0,'Mardi_19':0,'Mardi_20':0,'Mardi_21':0,'Mardi_22':0,'Mardi_23':0,'Mercredi_0':0,'Mercredi_1':0,'Mercredi_2':0,'Mercredi_3':0,'Mercredi_4':0,'Mercredi_5':0,'Mercredi_6':0,'Mercredi_7':0,'Mercredi_8':0,'Mercredi_9':0,'Mercredi_10':0,'Mercredi_11':0,'Mercredi_12':0,'Mercredi_13':0,'Mercredi_14':0,'Mercredi_15':0,'Mercredi_16':0,'Mercredi_17':0,'Mercredi_18':0,'Mercredi_19':0,'Mercredi_20':0,'Mercredi_21':0,'Mercredi_22':0,'Mercredi_23':0,'Jeudi_0':0,'Jeudi_1':0,'Jeudi_2':0,'Jeudi_3':0,'Jeudi_4':0,'Jeudi_5':0,'Jeudi_6':0,'Jeudi_7':0,'Jeudi_8':0,'Jeudi_9':0,'Jeudi_10':0,'Jeudi_11':0,'Jeudi_12':0,'Jeudi_13':0,'Jeudi_14':0,'Jeudi_15':0,'Jeudi_16':0,'Jeudi_17':0,'Jeudi_18':0,'Jeudi_19':0,'Jeudi_20':0,'Jeudi_21':0,'Jeudi_22':0,'Jeudi_23':0,'Vendredi_0':0,'Vendredi_1':0,'Vendredi_2':0,'Vendredi_3':0,'Vendredi_4':0,'Vendredi_5':0,'Vendredi_6':0,'Vendredi_7':0,'Vendredi_8':0,'Vendredi_9':0,'Vendredi_10':0,'Vendredi_11':0,'Vendredi_12':0,'Vendredi_13':0,'Vendredi_14':0,'Vendredi_15':0,'Vendredi_16':0,'Vendredi_17':0,'Vendredi_18':0,'Vendredi_19':0,'Vendredi_20':0,'Vendredi_21':0,'Vendredi_22':0,'Vendredi_23':0,'Samedi_0':0,'Samedi_1':0,'Samedi_2':0,'Samedi_3':0,'Samedi_4':0,'Samedi_5':0,'Samedi_6':0,'Samedi_7':0,'Samedi_8':0,'Samedi_9':0,'Samedi_10':0,'Samedi_11':0,'Samedi_12':0,'Samedi_13':0,'Samedi_14':0,'Samedi_15':0,'Samedi_16':0,'Samedi_17':0,'Samedi_18':0,'Samedi_19':0,'Samedi_20':0,'Samedi_21':0,'Samedi_22':0,'Samedi_23':0,'Dimanche_0':0,'Dimanche_1':0,'Dimanche_2':0,'Dimanche_3':0,'Dimanche_4':0,'Dimanche_5':0,'Dimanche_6':0,'Dimanche_7':0,'Dimanche_8':0,'Dimanche_9':0,'Dimanche_10':0,'Dimanche_11':0,'Dimanche_12':0,'Dimanche_13':0,'Dimanche_14':0,'Dimanche_15':0,'Dimanche_16':0,'Dimanche_17':0,'Dimanche_18':0,'Dimanche_19':0,'Dimanche_20':0,'Dimanche_21':0,'Dimanche_22':0,'Dimanche_23':0};
-
 
   constructor(id: number,nomLong:string, nomCommercial: string, lat, lng) {
     this.data= new Array<any>();  
@@ -152,64 +151,12 @@ export class Arret {
     this.dayHourData={'Lundi_0':0,'Lundi_1':0,'Lundi_2':0,'Lundi_3':0,'Lundi_4':0,'Lundi_5':0,'Lundi_6':0,'Lundi_7':0,'Lundi_8':0,'Lundi_9':0,'Lundi_10':0,'Lundi_11':0,'Lundi_12':0,'Lundi_13':0,'Lundi_14':0,'Lundi_15':0,'Lundi_16':0,'Lundi_17':0,'Lundi_18':0,'Lundi_19':0,'Lundi_20':0,'Lundi_21':0,'Lundi_22':0,'Lundi_23':0,'Mardi_0':0,'Mardi_1':0,'Mardi_2':0,'Mardi_3':0,'Mardi_4':0,'Mardi_5':0,'Mardi_6':0,'Mardi_7':0,'Mardi_8':0,'Mardi_9':0,'Mardi_10':0,'Mardi_11':0,'Mardi_12':0,'Mardi_13':0,'Mardi_14':0,'Mardi_15':0,'Mardi_16':0,'Mardi_17':0,'Mardi_18':0,'Mardi_19':0,'Mardi_20':0,'Mardi_21':0,'Mardi_22':0,'Mardi_23':0,'Mercredi_0':0,'Mercredi_1':0,'Mercredi_2':0,'Mercredi_3':0,'Mercredi_4':0,'Mercredi_5':0,'Mercredi_6':0,'Mercredi_7':0,'Mercredi_8':0,'Mercredi_9':0,'Mercredi_10':0,'Mercredi_11':0,'Mercredi_12':0,'Mercredi_13':0,'Mercredi_14':0,'Mercredi_15':0,'Mercredi_16':0,'Mercredi_17':0,'Mercredi_18':0,'Mercredi_19':0,'Mercredi_20':0,'Mercredi_21':0,'Mercredi_22':0,'Mercredi_23':0,'Jeudi_0':0,'Jeudi_1':0,'Jeudi_2':0,'Jeudi_3':0,'Jeudi_4':0,'Jeudi_5':0,'Jeudi_6':0,'Jeudi_7':0,'Jeudi_8':0,'Jeudi_9':0,'Jeudi_10':0,'Jeudi_11':0,'Jeudi_12':0,'Jeudi_13':0,'Jeudi_14':0,'Jeudi_15':0,'Jeudi_16':0,'Jeudi_17':0,'Jeudi_18':0,'Jeudi_19':0,'Jeudi_20':0,'Jeudi_21':0,'Jeudi_22':0,'Jeudi_23':0,'Vendredi_0':0,'Vendredi_1':0,'Vendredi_2':0,'Vendredi_3':0,'Vendredi_4':0,'Vendredi_5':0,'Vendredi_6':0,'Vendredi_7':0,'Vendredi_8':0,'Vendredi_9':0,'Vendredi_10':0,'Vendredi_11':0,'Vendredi_12':0,'Vendredi_13':0,'Vendredi_14':0,'Vendredi_15':0,'Vendredi_16':0,'Vendredi_17':0,'Vendredi_18':0,'Vendredi_19':0,'Vendredi_20':0,'Vendredi_21':0,'Vendredi_22':0,'Vendredi_23':0,'Samedi_0':0,'Samedi_1':0,'Samedi_2':0,'Samedi_3':0,'Samedi_4':0,'Samedi_5':0,'Samedi_6':0,'Samedi_7':0,'Samedi_8':0,'Samedi_9':0,'Samedi_10':0,'Samedi_11':0,'Samedi_12':0,'Samedi_13':0,'Samedi_14':0,'Samedi_15':0,'Samedi_16':0,'Samedi_17':0,'Samedi_18':0,'Samedi_19':0,'Samedi_20':0,'Samedi_21':0,'Samedi_22':0,'Samedi_23':0,'Dimanche_0':0,'Dimanche_1':0,'Dimanche_2':0,'Dimanche_3':0,'Dimanche_4':0,'Dimanche_5':0,'Dimanche_6':0,'Dimanche_7':0,'Dimanche_8':0,'Dimanche_9':0,'Dimanche_10':0,'Dimanche_11':0,'Dimanche_12':0,'Dimanche_13':0,'Dimanche_14':0,'Dimanche_15':0,'Dimanche_16':0,'Dimanche_17':0,'Dimanche_18':0,'Dimanche_19':0,'Dimanche_20':0,'Dimanche_21':0,'Dimanche_22':0,'Dimanche_23':0};
   }
 
-/*
-  setSizeData(){
-    //this.sizeData=data;
-    let size = this.sizeData/4000
-    this.setStyle(new ol.style.Style({
-      image: new ol.style.Circle({
-        stroke: new ol.style.Stroke({
-          color: '#06A1EF',
-          width: 0
-        }),
-        radius: size,
-        fill: new ol.style.Fill({
-          color: '#06A1EF'
-        })
-      }),
-      text: new ol.style.Text({
-        //text : this.sizeData+' Départs en retard',
-        font: 'Bold 14px  \'lato\''
-      })
-    }));
-  }
-*/
-
   getColor(value,transparency){
     var hue=((1-value)*120).toString(10);
     return ["hsl(",hue,",100%,40%,"+transparency+")"].join("");
   }
-/*
-  setSizeDataMagneto(){
-    //this.sizeData=data;
-    let size = 0;
-    if (this.sizeData>=2000){
-      size=1
-    } else {
-      size = this.sizeData/2000;
-    }
-    this.setStyle(new ol.style.Style({
-      image: new ol.style.Circle({
-        snapToPixel:false,
-        /*stroke: new ol.style.Stroke({
-          color: '#FFFFFF',
-          width: 0
-        }),*-/
-        radius: size*15,
-        fill: new ol.style.Fill({
-          color: this.getColor(size,0.9)//'#06A1EF'
-        })
-      }),
-      text: new ol.style.Text({
-        //text : this.sizeData+' Départs en retard',
-        font: 'Bold 14px  \'lato\''
-      })
-    }));
 
-  }
-*/
   setMonthDataStyle(month:string,min:number,max:number){
-    //console.log(this.monthData);
         let size = 0;
 
         if (this.monthData[month]){
@@ -238,14 +185,7 @@ export class Arret {
         } else {
           radSize=size*40;
         }
-        /*
-        if (this.monthData[month]>=40000){
-          size=1
-        } else if(this.monthData[month]>=10000){
-          size = ((0.5/30000)*this.monthData[month])+(1/3)
-        } else {
-          size = (this.monthData[month]*0.5)/10000;
-        }*/
+
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
@@ -274,15 +214,6 @@ export class Arret {
     if (size>1){
       size=1
     }
-
-    /*
-    if (this.monthData[month]>=40000){
-      size=1
-    } else if(this.monthData[month]>=10000){
-      size = ((0.5/30000)*this.monthData[month])+(1/3)
-    } else {
-      size = (this.monthData[month]*0.5)/10000;
-    }*/
 
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.monthData[month]+' Montées en '+month;
     let textLength = text.length;
@@ -316,7 +247,6 @@ export class Arret {
   }
 
   setDayDataStyle(day:string,min:number,max:number){
-    //console.log(this.monthData);
         let size = 0;
 
         if (this.dayData[day]){
@@ -346,13 +276,6 @@ export class Arret {
           radSize=size*40;
         }
 
-        /*if (this.dayData[day]>=40000){
-          size=1
-        } else if(this.dayData[day]>=10000){
-          size = ((0.5/30000)*this.dayData[day])+(1/3)
-        } else {
-          size = (this.dayData[day]*0.5)/10000;
-        }*/
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
@@ -381,14 +304,6 @@ export class Arret {
     if (size>1){
       size=1
     }
-/*
-    if (this.dayData[day]>=40000){
-      size=1
-    } else if(this.dayData[day]>=10000){
-      size = ((0.5/30000)*this.dayData[day])+(1/3)
-    } else {
-      size = (this.dayData[day]*0.5)/10000;
-    }*/
 
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.dayData[day]+' Montées les '+day+'s';
     let textLength = text.length;
@@ -423,7 +338,6 @@ export class Arret {
 
 
   setHourDataStyle(hour:string,min:number,max:number){
-    //console.log(this.monthData);
     let size = 0;
 
     if (this.hourData[hour]){
@@ -453,14 +367,6 @@ export class Arret {
       radSize=size*40;
     }
 
-        
-        /*if (this.hourData[hour]>=40000){
-          size=1
-        } else if(this.hourData[hour]>=10000){
-          size = ((0.5/30000)*this.hourData[hour])+(1/3)
-        } else {
-          size = (this.hourData[hour]*0.5)/10000;
-        }*/
         this.setStyle(new ol.style.Style({
           image: new ol.style.Circle({
             snapToPixel:false,
@@ -489,14 +395,6 @@ export class Arret {
     if (size>1){
       size=1
     }
-
-    /*if (this.hourData[hour]>=40000){
-      size=1
-    } else if(this.hourData[hour]>=10000){
-      size = ((0.5/30000)*this.hourData[hour])+(1/3)
-    } else {
-      size = (this.hourData[hour]*0.5)/10000;
-    }*/
 
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.hourData[hour]+' Montées à '+hour+'h';
     let textLength = text.length;
@@ -527,14 +425,12 @@ export class Arret {
       style: this.dHStyle,
       layers: [this.geo]
     });
+    
   }
 
 
   setDayHourDataStyle(day:string,hour:string,min:number,max:number){
         let size = 0;
-        //console.log(this.dayHourData[day+'_'+hour]);
-
-
         if (this.dayHourData[day+'_'+hour]){
           size = (this.dayHourData[day+'_'+hour]-min)/(max-min);
         }
@@ -591,13 +487,7 @@ export class Arret {
     if (size>1){
       size=1
     }
-/*
-    if (this.dayHourData[day+'_'+hour]>=4000){
-      size=1
-    } else {
-      size = this.dayHourData[day+'_'+hour]/4000;
-    }
-*/
+
     let text = 'Arret \' '+this.getNomCommercial()+' \'\n'+this.dayHourData[day+'_'+hour]+' Montées,\nles '+day+'s à '+hour+'h';
     let textLength = text.length;
 
